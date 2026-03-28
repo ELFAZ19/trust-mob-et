@@ -1,99 +1,103 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { SectionCard } from "../../components/SectionCard";
 import { StatCard } from "../../components/StatCard";
 import { TamagnScreen } from "../../components/TamagnScreen";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography } from "../../core/theme/tokens";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_DARK } from "../../core/theme/tokens";
 
+const monthlyData = [12, 18, 14, 22, 19, 28, 24, 32, 28, 38, 35, 42];
 const topProducts = [
-  { name: "Fresh Injera Pack", sold: 87, revenue: 15660 },
-  { name: "Berbere Spice Mix", sold: 45, revenue: 11250 },
-  { name: "Roasted Coffee Bundle", sold: 38, revenue: 12160 },
-  { name: "Honey (Wild Forest)", sold: 22, revenue: 8360 },
+  { name: "Sidama Specialty Coffee", sales: 128, revenue: 57600 },
+  { name: "Berbere Spice Mix", sales: 94, revenue: 23500 },
+  { name: "Fresh Injera Pack", sales: 87, revenue: 15660 },
+  { name: "Wild Forest Honey", sales: 62, revenue: 23560 },
 ];
 
-const monthlyData = [
-  { month: "Jan", amount: 42000 },
-  { month: "Feb", amount: 58000 },
-  { month: "Mar", amount: 67000 },
-  { month: "Apr", amount: 54000 },
-  { month: "May", amount: 73000 },
-  { month: "Jun", amount: 89000 },
+const feedbackDist = [
+  { stars: 5, pct: 72, count: 245 },
+  { stars: 4, pct: 18, count: 61 },
+  { stars: 3, pct: 6, count: 20 },
+  { stars: 2, pct: 3, count: 10 },
+  { stars: 1, pct: 1, count: 6 },
 ];
 
 export function MerchantAnalyticsScreen(): JSX.Element {
-  const maxAmount = Math.max(...monthlyData.map((m) => m.amount));
+  const maxVal = Math.max(...monthlyData);
 
   return (
-    <TamagnScreen title="Analytics" subtitle="Performance overview for your store">
+    <TamagnScreen title="Analytics" subtitle="Performance overview">
       {/* Key Metrics */}
       <View style={{ flexDirection: "row", gap: 10, marginBottom: tamagnSpacing.md }}>
-        <StatCard icon="💰" label="This Month" value="ETB 89K" color={tamagnColors.primary} />
-        <StatCard icon="📦" label="Orders" value="214" />
+        <StatCard icon="💰" label="Total Revenue" value="ETB 120K" color={tamagnColors.primary} />
+        <StatCard icon="📈" label="Growth" value="+18%" color={tamagnColors.tertiary} bgTint="rgba(246,135,0,0.08)" />
       </View>
       <View style={{ flexDirection: "row", gap: 10, marginBottom: tamagnSpacing.lg }}>
-        <StatCard icon="😊" label="Positive Reviews" value="92%" color={tamagnColors.primary} />
-        <StatCard icon="⏱️" label="Avg Response" value="12 min" />
+        <StatCard icon="🛒" label="Total Orders" value="342" />
+        <StatCard icon="🔄" label="Repeat Rate" value="67%" />
       </View>
 
       {/* Revenue Chart */}
-      <SectionCard title="Monthly Revenue">
-        <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 8, height: 120, marginTop: tamagnSpacing.sm }}>
-          {monthlyData.map((m) => {
-            const height = Math.max(8, (m.amount / maxAmount) * 100);
-            return (
-              <View key={m.month} style={{ flex: 1, alignItems: "center" }}>
-                <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary, marginBottom: 4 }}>
-                  {Math.round(m.amount / 1000)}K
-                </Text>
-                <View style={{ width: "100%", height, backgroundColor: tamagnColors.primaryContainer, borderRadius: tamagnRadius.sm }} />
-                <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary, marginTop: 4 }}>{m.month}</Text>
-              </View>
-            );
-          })}
-        </View>
-      </SectionCard>
+      <View style={{ borderRadius: tamagnRadius.hero, overflow: "hidden", marginBottom: tamagnSpacing.lg }}>
+        <LinearGradient colors={[...GRADIENT_DARK]} style={{ padding: tamagnSpacing.lg }}>
+          <Text style={{ ...tamagnTypography.cardTitle, color: "#fff", marginBottom: tamagnSpacing.md }}>Monthly Revenue (ETB ×1000)</Text>
+          <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 6, height: 100 }}>
+            {monthlyData.map((val, i) => (
+              <View
+                key={i}
+                style={{
+                  flex: 1,
+                  height: `${(val / maxVal) * 100}%`,
+                  borderRadius: 4,
+                  backgroundColor: i === monthlyData.length - 1 ? tamagnColors.primaryContainer : "rgba(255,255,255,0.2)",
+                }}
+              />
+            ))}
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 6 }}>
+            {["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"].map((m) => (
+              <Text key={m} style={{ flex: 1, textAlign: "center", ...tamagnTypography.labelSm, color: "rgba(255,255,255,0.4)" }}>{m}</Text>
+            ))}
+          </View>
+        </LinearGradient>
+      </View>
 
       {/* Top Products */}
-      <SectionCard title="Top Products">
-        {topProducts.map((product, idx) => (
-          <View key={product.name} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 8, borderBottomWidth: idx < topProducts.length - 1 ? 1 : 0, borderBottomColor: tamagnColors.surfaceContainerLow }}>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-              <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: tamagnColors.primaryContainer, justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ fontSize: 11, fontWeight: "800", color: tamagnColors.onPrimaryContainer }}>{idx + 1}</Text>
-              </View>
-              <View>
-                <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.onSurface }}>{product.name}</Text>
-                <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>{product.sold} sold</Text>
-              </View>
+      <SectionCard title="Top Selling Products">
+        {topProducts.map((p, i) => (
+          <View key={p.name} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10, gap: 12 }}>
+            <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: i === 0 ? tamagnColors.primaryFixed : tamagnColors.surfaceContainerHigh, justifyContent: "center", alignItems: "center" }}>
+              <Text style={{ ...tamagnTypography.captionBold, color: i === 0 ? tamagnColors.onPrimaryContainer : tamagnColors.secondary }}>#{i + 1}</Text>
             </View>
-            <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.primary }}>ETB {product.revenue.toLocaleString()}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.onSurface }}>{p.name}</Text>
+              <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>{p.sales} units sold</Text>
+            </View>
+            <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.primary }}>{p.revenue.toLocaleString()} ETB</Text>
           </View>
         ))}
       </SectionCard>
 
-      {/* Customer Feedback */}
+      {/* Feedback Distribution */}
       <SectionCard title="Customer Feedback">
-        <View style={{ gap: tamagnSpacing.sm }}>
-          <FeedbackBar label="5 stars" pct={65} />
-          <FeedbackBar label="4 stars" pct={22} />
-          <FeedbackBar label="3 stars" pct={8} />
-          <FeedbackBar label="2 stars" pct={3} />
-          <FeedbackBar label="1 star" pct={2} />
+        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: tamagnSpacing.md }}>
+          <Text style={{ ...tamagnTypography.statLg, color: tamagnColors.onSurface, marginRight: 8 }}>4.9</Text>
+          <View>
+            <Text style={{ fontSize: 16, color: tamagnColors.tertiary }}>★★★★★</Text>
+            <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>342 total reviews</Text>
+          </View>
         </View>
+        {feedbackDist.map((row) => (
+          <View key={row.stars} style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 6 }}>
+            <Text style={{ width: 14, ...tamagnTypography.captionBold, color: tamagnColors.onSurface, textAlign: "right" }}>{row.stars}</Text>
+            <Text style={{ fontSize: 10, color: tamagnColors.tertiary }}>★</Text>
+            <View style={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: tamagnColors.surfaceContainerHigh, overflow: "hidden" }}>
+              <View style={{ width: `${row.pct}%`, height: "100%", borderRadius: 4, backgroundColor: row.stars >= 4 ? tamagnColors.primary : row.stars === 3 ? tamagnColors.tertiary : tamagnColors.error }} />
+            </View>
+            <Text style={{ width: 36, ...tamagnTypography.caption, color: tamagnColors.secondary, textAlign: "right" }}>{row.count}</Text>
+          </View>
+        ))}
       </SectionCard>
     </TamagnScreen>
-  );
-}
-
-function FeedbackBar({ label, pct }: { label: string; pct: number }) {
-  return (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-      <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary, width: 50 }}>{label}</Text>
-      <View style={{ flex: 1, height: 8, backgroundColor: tamagnColors.surfaceContainer, borderRadius: 4 }}>
-        <View style={{ width: `${pct}%`, height: 8, backgroundColor: tamagnColors.primaryContainer, borderRadius: 4 }} />
-      </View>
-      <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary, width: 32, textAlign: "right" }}>{pct}%</Text>
-    </View>
   );
 }

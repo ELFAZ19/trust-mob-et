@@ -1,9 +1,9 @@
 import React from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Platform, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useAuth } from "../core/auth/AuthContext";
-import { tamagnColors } from "../core/theme/tokens";
+import { tamagnColors, tamagnRadius, tamagnTypography } from "../core/theme/tokens";
 
 import { SignInScreen } from "../features/auth/SignInScreen";
 import { HomeScreen } from "../features/home/HomeScreen";
@@ -28,56 +28,72 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const BuyerTab = createBottomTabNavigator();
 const MerchantTab = createBottomTabNavigator();
 
-function TabIcon({ emoji, focused }: { emoji: string; focused: boolean }) {
-  return <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.5 }}>{emoji}</Text>;
+const TAB_ICONS_BUYER: Record<string, { active: string; inactive: string }> = {
+  Home: { active: "🏠", inactive: "🏠" },
+  Discovery: { active: "🔍", inactive: "🔍" },
+  Cart: { active: "🛒", inactive: "🛒" },
+  OrdersList: { active: "📦", inactive: "📦" },
+  BuyerProfile: { active: "👤", inactive: "👤" },
+};
+
+const TAB_ICONS_MERCHANT: Record<string, { active: string; inactive: string }> = {
+  Dashboard: { active: "📊", inactive: "📊" },
+  Catalog: { active: "📋", inactive: "📋" },
+  MerchantOrders: { active: "📦", inactive: "📦" },
+  Analytics: { active: "📈", inactive: "📈" },
+  MerchantProfile: { active: "👤", inactive: "👤" },
+};
+
+function TabIcon({ name, focused, icons }: { name: string; focused: boolean; icons: Record<string, { active: string; inactive: string }> }) {
+  const emoji = icons[name]?.[focused ? "active" : "inactive"] ?? "●";
+  return (
+    <View style={focused ? {
+      backgroundColor: "rgba(1,110,0,0.08)",
+      borderRadius: tamagnRadius.lg,
+      paddingHorizontal: 14,
+      paddingVertical: 6,
+    } : undefined}>
+      <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.5 }}>{emoji}</Text>
+    </View>
+  );
 }
+
+const glassTabBarStyle = {
+  backgroundColor: Platform.OS === "web" ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.95)",
+  borderTopWidth: 0,
+  borderTopLeftRadius: 28,
+  borderTopRightRadius: 28,
+  position: "absolute" as const,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  height: 72,
+  paddingBottom: Platform.OS === "ios" ? 24 : 8,
+  paddingTop: 8,
+  elevation: 12,
+  shadowColor: "#000",
+  shadowOpacity: 0.05,
+  shadowRadius: 20,
+  shadowOffset: { width: 0, height: -4 },
+};
 
 function BuyerTabs(): JSX.Element {
   return (
     <BuyerTab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: tamagnColors.surfaceContainerLowest,
-          borderTopWidth: 0,
-          elevation: 8,
-          shadowColor: tamagnColors.onSurface,
-          shadowOpacity: 0.06,
-          shadowRadius: 12,
-          shadowOffset: { width: 0, height: -4 },
-          height: 60,
-          paddingBottom: 6,
-        },
+        tabBarStyle: glassTabBarStyle,
         tabBarActiveTintColor: tamagnColors.primary,
         tabBarInactiveTintColor: tamagnColors.secondary,
-        tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
-      }}
+        tabBarLabelStyle: { ...tamagnTypography.labelSm, letterSpacing: 0.5, marginTop: -2 },
+        tabBarIcon: ({ focused }) => <TabIcon name={route.name} focused={focused} icons={TAB_ICONS_BUYER} />,
+      })}
     >
-      <BuyerTab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" focused={focused} /> }}
-      />
-      <BuyerTab.Screen
-        name="Discovery"
-        component={DiscoveryScreen}
-        options={{ tabBarLabel: "Discover", tabBarIcon: ({ focused }) => <TabIcon emoji="🔍" focused={focused} /> }}
-      />
-      <BuyerTab.Screen
-        name="Cart"
-        component={CartScreen}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🛒" focused={focused} /> }}
-      />
-      <BuyerTab.Screen
-        name="OrdersList"
-        component={OrdersListScreen}
-        options={{ tabBarLabel: "Orders", tabBarIcon: ({ focused }) => <TabIcon emoji="📦" focused={focused} /> }}
-      />
-      <BuyerTab.Screen
-        name="BuyerProfile"
-        component={ProfileScreen}
-        options={{ tabBarLabel: "Profile", tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} /> }}
-      />
+      <BuyerTab.Screen name="Home" component={HomeScreen} />
+      <BuyerTab.Screen name="Discovery" component={DiscoveryScreen} options={{ tabBarLabel: "Discover" }} />
+      <BuyerTab.Screen name="Cart" component={CartScreen} />
+      <BuyerTab.Screen name="OrdersList" component={OrdersListScreen} options={{ tabBarLabel: "Orders" }} />
+      <BuyerTab.Screen name="BuyerProfile" component={ProfileScreen} options={{ tabBarLabel: "Profile" }} />
     </BuyerTab.Navigator>
   );
 }
@@ -85,49 +101,20 @@ function BuyerTabs(): JSX.Element {
 function MerchantTabs(): JSX.Element {
   return (
     <MerchantTab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: tamagnColors.surfaceContainerLowest,
-          borderTopWidth: 0,
-          elevation: 8,
-          shadowColor: tamagnColors.onSurface,
-          shadowOpacity: 0.06,
-          shadowRadius: 12,
-          shadowOffset: { width: 0, height: -4 },
-          height: 60,
-          paddingBottom: 6,
-        },
+        tabBarStyle: glassTabBarStyle,
         tabBarActiveTintColor: tamagnColors.primary,
         tabBarInactiveTintColor: tamagnColors.secondary,
-        tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
-      }}
+        tabBarLabelStyle: { ...tamagnTypography.labelSm, letterSpacing: 0.5, marginTop: -2 },
+        tabBarIcon: ({ focused }) => <TabIcon name={route.name} focused={focused} icons={TAB_ICONS_MERCHANT} />,
+      })}
     >
-      <MerchantTab.Screen
-        name="Dashboard"
-        component={MerchantDashboardScreen}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="📊" focused={focused} /> }}
-      />
-      <MerchantTab.Screen
-        name="Catalog"
-        component={CatalogManagementScreen}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="📋" focused={focused} /> }}
-      />
-      <MerchantTab.Screen
-        name="MerchantOrders"
-        component={MerchantOrdersScreen}
-        options={{ tabBarLabel: "Orders", tabBarIcon: ({ focused }) => <TabIcon emoji="📦" focused={focused} /> }}
-      />
-      <MerchantTab.Screen
-        name="Analytics"
-        component={MerchantAnalyticsScreen}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="📈" focused={focused} /> }}
-      />
-      <MerchantTab.Screen
-        name="MerchantProfile"
-        component={ProfileScreen}
-        options={{ tabBarLabel: "Profile", tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} /> }}
-      />
+      <MerchantTab.Screen name="Dashboard" component={MerchantDashboardScreen} />
+      <MerchantTab.Screen name="Catalog" component={CatalogManagementScreen} />
+      <MerchantTab.Screen name="MerchantOrders" component={MerchantOrdersScreen} options={{ tabBarLabel: "Orders" }} />
+      <MerchantTab.Screen name="Analytics" component={MerchantAnalyticsScreen} />
+      <MerchantTab.Screen name="MerchantProfile" component={ProfileScreen} options={{ tabBarLabel: "Profile" }} />
     </MerchantTab.Navigator>
   );
 }
@@ -138,9 +125,9 @@ export function RootNavigator(): JSX.Element {
   if (isBooting) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: tamagnColors.surface }}>
-        <Text style={{ fontSize: 32, marginBottom: 12 }}>🛡️</Text>
+        <Text style={{ ...tamagnTypography.displayLg, color: tamagnColors.primary, marginBottom: 12 }}>ታማኝ</Text>
         <ActivityIndicator color={tamagnColors.primary} size="large" />
-        <Text style={{ color: tamagnColors.secondary, marginTop: 12, fontSize: 14 }}>Loading ታማኝ...</Text>
+        <Text style={{ color: tamagnColors.secondary, marginTop: 12, ...tamagnTypography.body }}>Loading...</Text>
       </View>
     );
   }

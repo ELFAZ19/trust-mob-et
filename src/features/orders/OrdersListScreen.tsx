@@ -1,94 +1,89 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
-import { SectionCard } from "../../components/SectionCard";
 import { TamagnScreen } from "../../components/TamagnScreen";
 import { EmptyState } from "../../components/EmptyState";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography } from "../../core/theme/tokens";
-import type { Order, OrderStatus } from "../../core/types/domain";
+import { TrustBadge } from "../../components/TrustBadge";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow } from "../../core/theme/tokens";
 
-const statusConfig: Record<OrderStatus, { color: string; bg: string; label: string }> = {
-  placed: { color: "#6D5E00", bg: "#FFF8E1", label: "Placed" },
-  confirmed: { color: tamagnColors.primary, bg: "#E8F5E9", label: "Confirmed" },
-  preparing: { color: "#E65100", bg: "#FFF3E0", label: "Preparing" },
-  readyForPickup: { color: "#1565C0", bg: "#E3F2FD", label: "Ready" },
-  pickedUp: { color: "#6A1B9A", bg: "#F3E5F5", label: "Picked Up" },
-  inTransit: { color: "#00838F", bg: "#E0F7FA", label: "In Transit" },
-  delivered: { color: tamagnColors.primary, bg: tamagnColors.primaryFixed, label: "Delivered" },
-  disputed: { color: tamagnColors.error, bg: tamagnColors.errorContainer, label: "Disputed" },
-  cancelled: { color: "#616161", bg: "#F5F5F5", label: "Cancelled" },
+interface MockOrder {
+  id: string;
+  items: string;
+  total: number;
+  status: "processing" | "shipped" | "delivered" | "cancelled";
+  date: string;
+  merchantName: string;
+}
+
+const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
+  processing: { label: "Processing", color: tamagnColors.tertiary, bg: "rgba(246,135,0,0.1)" },
+  shipped: { label: "In Transit", color: "#2196F3", bg: "rgba(33,150,243,0.1)" },
+  delivered: { label: "Delivered", color: tamagnColors.primary, bg: "rgba(1,110,0,0.1)" },
+  cancelled: { label: "Cancelled", color: tamagnColors.error, bg: "rgba(186,26,26,0.1)" },
 };
 
-const demoOrders: Order[] = [
-  {
-    id: "ORD-1001",
-    buyerId: "b1",
-    merchantId: "m1",
-    merchantName: "Selam Foods",
-    items: [{ listingId: "p1", title: "Fresh Injera Pack", price: 180, quantity: 2, merchantName: "Selam Foods" }],
-    status: "inTransit",
-    subtotal: 360,
-    deliveryFee: 80,
-    platformFee: 7,
-    total: 447,
-    escrow: { orderId: "ORD-1001", state: "held", amount: 447 },
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "ORD-1000",
-    buyerId: "b1",
-    merchantId: "m3",
-    merchantName: "Harar Beans",
-    items: [{ listingId: "p2", title: "Organic Ethiopian Coffee", price: 450, quantity: 1, merchantName: "Harar Beans" }],
-    status: "delivered",
-    subtotal: 450,
-    deliveryFee: 80,
-    platformFee: 9,
-    total: 539,
-    escrow: { orderId: "ORD-1000", state: "released", amount: 539 },
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-    updatedAt: new Date(Date.now() - 82800000).toISOString(),
-  },
+const mockOrders: MockOrder[] = [
+  { id: "ORD-1001", items: "Sidama Coffee × 2, Fresh Injera Pack × 1", total: 1080, status: "shipped", date: "Mar 27, 2026", merchantName: "Harar Beans" },
+  { id: "ORD-1002", items: "Samsung Galaxy A55", total: 18500, status: "processing", date: "Mar 26, 2026", merchantName: "NextGen Electronics" },
+  { id: "ORD-1003", items: "Berbere Spice Mix × 3", total: 750, status: "delivered", date: "Mar 24, 2026", merchantName: "Merkato Finest" },
+  { id: "ORD-1004", items: "Handwoven Shemma", total: 1200, status: "delivered", date: "Mar 20, 2026", merchantName: "Dorze Weavers" },
 ];
 
 export function OrdersListScreen({ navigation }: { navigation: any }): JSX.Element {
-  if (demoOrders.length === 0) {
-    return (
-      <TamagnScreen title="My Orders">
-        <EmptyState icon="📦" title="No orders yet" subtitle="Start shopping to see your orders here" />
-      </TamagnScreen>
-    );
-  }
+  const active = mockOrders.filter((o) => o.status !== "delivered" && o.status !== "cancelled");
+  const past = mockOrders.filter((o) => o.status === "delivered" || o.status === "cancelled");
 
   return (
-    <TamagnScreen title="My Orders" subtitle={`${demoOrders.length} orders`}>
-      {demoOrders.map((order) => {
-        const s = statusConfig[order.status];
-        return (
-          <SectionCard key={order.id} onPress={() => navigation.navigate("OrderDetail", { order })}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                  <Text style={{ ...tamagnTypography.cardTitle, color: tamagnColors.onSurface }}>{order.id}</Text>
-                  <View style={{ backgroundColor: s.bg, borderRadius: tamagnRadius.pill, paddingHorizontal: 8, paddingVertical: 2 }}>
-                    <Text style={{ fontSize: 11, fontWeight: "700", color: s.color }}>{s.label}</Text>
-                  </View>
-                </View>
-                <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary, marginTop: 4 }}>{order.merchantName}</Text>
-                <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>
-                  {order.items.length} item{order.items.length > 1 ? "s" : ""} · {new Date(order.createdAt).toLocaleDateString()}
-                </Text>
-              </View>
-              <View style={{ alignItems: "flex-end" }}>
-                <Text style={{ ...tamagnTypography.price, color: tamagnColors.primary }}>ETB {order.total}</Text>
-                <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary, marginTop: 2 }}>
-                  Escrow: {order.escrow.state}
-                </Text>
-              </View>
-            </View>
-          </SectionCard>
-        );
-      })}
+    <TamagnScreen title="Orders">
+      {mockOrders.length === 0 ? (
+        <EmptyState icon="📦" title="No orders yet" subtitle="Your order history will appear here" />
+      ) : (
+        <>
+          {active.length > 0 ? (
+            <>
+              <Text style={{ ...tamagnTypography.label, color: tamagnColors.secondary, marginBottom: tamagnSpacing.sm }}>ACTIVE</Text>
+              {active.map((order) => <OrderCard key={order.id} order={order} onPress={() => navigation.navigate("OrderDetail", { orderId: order.id })} />)}
+            </>
+          ) : null}
+
+          {past.length > 0 ? (
+            <>
+              <Text style={{ ...tamagnTypography.label, color: tamagnColors.secondary, marginTop: tamagnSpacing.lg, marginBottom: tamagnSpacing.sm }}>COMPLETED</Text>
+              {past.map((order) => <OrderCard key={order.id} order={order} onPress={() => navigation.navigate("OrderDetail", { orderId: order.id })} />)}
+            </>
+          ) : null}
+        </>
+      )}
     </TamagnScreen>
+  );
+}
+
+function OrderCard({ order, onPress }: { order: MockOrder; onPress: () => void }) {
+  const sc = statusConfig[order.status];
+  return (
+    <Pressable
+      onPress={onPress}
+      style={{
+        backgroundColor: tamagnColors.surfaceContainerLowest,
+        borderRadius: tamagnRadius.xl,
+        padding: tamagnSpacing.md,
+        marginBottom: tamagnSpacing.sm,
+        ...tamagnShadow,
+      }}
+    >
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+        <View>
+          <Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.secondary }}>{order.id}</Text>
+          <Text style={{ ...tamagnTypography.caption, color: tamagnColors.outlineVariant }}>{order.date}</Text>
+        </View>
+        <View style={{ backgroundColor: sc.bg, borderRadius: tamagnRadius.pill, paddingHorizontal: 10, paddingVertical: 4 }}>
+          <Text style={{ ...tamagnTypography.captionBold, color: sc.color }}>{sc.label}</Text>
+        </View>
+      </View>
+      <Text style={{ ...tamagnTypography.cardTitle, color: tamagnColors.onSurface, marginBottom: 4 }} numberOfLines={2}>{order.items}</Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 4 }}>
+        <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>{order.merchantName}</Text>
+        <Text style={{ ...tamagnTypography.price, color: tamagnColors.primary }}>{order.total.toLocaleString()} ETB</Text>
+      </View>
+    </Pressable>
   );
 }

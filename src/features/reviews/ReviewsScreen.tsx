@@ -1,90 +1,90 @@
 import React, { useState } from "react";
 import { Alert, Pressable, Text, TextInput, View } from "react-native";
-import { SectionCard } from "../../components/SectionCard";
-import { TamagnButton } from "../../components/TamagnButton";
+import { LinearGradient } from "expo-linear-gradient";
 import { TamagnScreen } from "../../components/TamagnScreen";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography } from "../../core/theme/tokens";
-import type { Review } from "../../core/types/domain";
+import { SectionCard } from "../../components/SectionCard";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
 
-const existingReviews: Review[] = [
-  { id: "r1", orderId: "ORD-1000", merchantId: "m3", buyerName: "Abebe T.", rating: 5, comment: "Excellent coffee, very fast delivery!", createdAt: new Date(Date.now() - 86400000).toISOString() },
-  { id: "r2", orderId: "ORD-0999", merchantId: "m1", buyerName: "Sara M.", rating: 4, comment: "Good injera, packaging could be better.", createdAt: new Date(Date.now() - 172800000).toISOString() },
+const pastReviews = [
+  { id: "r1", merchantName: "Harar Beans", product: "Sidama Coffee", rating: 5, comment: "Excellent quality, fast delivery!", date: "Mar 25, 2026" },
+  { id: "r2", merchantName: "Merkato Finest", product: "Berbere Spice Mix", rating: 4, comment: "Good spice blend, slightly delayed.", date: "Mar 20, 2026" },
+  { id: "r3", merchantName: "Dorze Weavers", product: "Handwoven Shemma", rating: 5, comment: "Beautiful craftsmanship, worth every birr.", date: "Mar 15, 2026" },
 ];
 
-export function ReviewsScreen(): JSX.Element {
-  const [rating, setRating] = useState(5);
+export function ReviewsScreen({ navigation }: { navigation: any }): JSX.Element {
+  const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  const [reviews, setReviews] = useState(existingReviews);
 
   function handleSubmit() {
-    if (!comment.trim()) {
-      Alert.alert("Please add a comment");
-      return;
-    }
-    const newReview: Review = {
-      id: `r-${Date.now()}`,
-      orderId: "latest",
-      merchantId: "m1",
-      buyerName: "You",
-      rating,
-      comment: comment.trim(),
-      createdAt: new Date().toISOString(),
-    };
-    setReviews([newReview, ...reviews]);
+    if (rating === 0) { Alert.alert("Error", "Please select a rating"); return; }
+    Alert.alert("Thank You!", "Your review helps build a trustworthy community.");
+    setRating(0);
     setComment("");
-    setRating(5);
-    Alert.alert("Review Submitted", "Thanks for contributing to merchant trust scores!");
   }
 
   return (
-    <TamagnScreen title="Reviews" subtitle="Rate your experience">
-      {/* Submit Review */}
-      <SectionCard title="Write a Review">
-        <Text style={{ ...tamagnTypography.label, color: tamagnColors.outline, marginBottom: 8 }}>YOUR RATING</Text>
+    <TamagnScreen title="Reviews" onBack={() => navigation.goBack()}>
+      {/* Write Review */}
+      <SectionCard title="Write a Review" accent={tamagnColors.primary}>
+        <Text style={{ ...tamagnTypography.label, color: tamagnColors.outline, marginBottom: tamagnSpacing.sm }}>YOUR RATING</Text>
         <View style={{ flexDirection: "row", gap: 8, marginBottom: tamagnSpacing.md }}>
           {[1, 2, 3, 4, 5].map((star) => (
-            <Pressable key={star} onPress={() => setRating(star)}>
-              <Text style={{ fontSize: 28 }}>{star <= rating ? "⭐" : "☆"}</Text>
+            <Pressable key={star} onPress={() => setRating(star)} style={{ padding: 4 }}>
+              <Text style={{ fontSize: 28, color: star <= rating ? tamagnColors.tertiary : tamagnColors.surfaceContainerHigh }}>★</Text>
             </Pressable>
           ))}
         </View>
+
+        <Text style={{ ...tamagnTypography.label, color: tamagnColors.outline, marginBottom: tamagnSpacing.xs }}>YOUR FEEDBACK</Text>
         <TextInput
           value={comment}
           onChangeText={setComment}
           placeholder="Share your experience..."
           placeholderTextColor={tamagnColors.outlineVariant}
           multiline
+          numberOfLines={3}
           style={{
             backgroundColor: tamagnColors.surfaceContainerLow,
             borderRadius: tamagnRadius.md,
-            padding: 12,
+            padding: tamagnSpacing.md,
+            minHeight: 80,
             fontSize: 14,
             color: tamagnColors.onSurface,
-            minHeight: 80,
             textAlignVertical: "top",
             marginBottom: tamagnSpacing.md,
           }}
         />
-        <TamagnButton title="Submit Review" onPress={handleSubmit} />
+
+        <Pressable onPress={handleSubmit}>
+          <LinearGradient
+            colors={[...GRADIENT_PRIMARY]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{ borderRadius: tamagnRadius.md, paddingVertical: 14, alignItems: "center" }}
+          >
+            <Text style={{ color: "#fff", fontWeight: "900", fontSize: 14 }}>Submit Review</Text>
+          </LinearGradient>
+        </Pressable>
       </SectionCard>
 
       {/* Past Reviews */}
-      <Text style={{ ...tamagnTypography.sectionTitle, color: tamagnColors.onSurface, marginBottom: tamagnSpacing.sm }}>Recent Reviews</Text>
-      {reviews.map((review) => (
-        <SectionCard key={review.id}>
-          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-            <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.onSurface }}>{review.buyerName}</Text>
-            <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>
-              {new Date(review.createdAt).toLocaleDateString()}
-            </Text>
+      <Text style={{ ...tamagnTypography.sectionTitle, color: tamagnColors.onSurface, marginBottom: tamagnSpacing.sm }}>Your Reviews</Text>
+      {pastReviews.map((review) => (
+        <View key={review.id} style={{ backgroundColor: tamagnColors.surfaceContainerLowest, borderRadius: tamagnRadius.xl, padding: tamagnSpacing.md, marginBottom: tamagnSpacing.sm, ...tamagnShadow }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 6 }}>
+            <View>
+              <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.onSurface }}>{review.product}</Text>
+              <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>{review.merchantName}</Text>
+            </View>
+            <Text style={{ ...tamagnTypography.caption, color: tamagnColors.outlineVariant }}>{review.date}</Text>
           </View>
-          <View style={{ flexDirection: "row", gap: 2, marginVertical: 4 }}>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Text key={i} style={{ fontSize: 14 }}>{i < review.rating ? "⭐" : "☆"}</Text>
+          <View style={{ flexDirection: "row", marginBottom: 4 }}>
+            {[1, 2, 3, 4, 5].map((s) => (
+              <Text key={s} style={{ fontSize: 14, color: s <= review.rating ? tamagnColors.tertiary : tamagnColors.surfaceContainerHigh }}>★</Text>
             ))}
           </View>
           <Text style={{ ...tamagnTypography.body, color: tamagnColors.onSurface }}>{review.comment}</Text>
-        </SectionCard>
+        </View>
       ))}
     </TamagnScreen>
   );

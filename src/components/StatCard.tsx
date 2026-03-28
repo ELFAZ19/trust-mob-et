@@ -7,21 +7,24 @@ interface StatCardProps {
   value: string;
   icon?: string;
   color?: string;
+  bgTint?: string;
 }
 
-export function StatCard({ label, value, icon, color }: StatCardProps): JSX.Element {
+export function StatCard({ label, value, icon, color, bgTint }: StatCardProps): JSX.Element {
   return (
-    <View
-      style={{
-        flex: 1,
-        minWidth: 140,
-        borderRadius: tamagnRadius.lg,
-        padding: tamagnSpacing.md,
-        backgroundColor: tamagnColors.surfaceContainerLowest,
-        ...tamagnShadow,
-      }}
-    >
-      {icon ? <Text style={{ fontSize: 22, marginBottom: 6 }}>{icon}</Text> : null}
+    <View style={{
+      flex: 1,
+      minWidth: 140,
+      borderRadius: tamagnRadius.xl,
+      padding: tamagnSpacing.md,
+      backgroundColor: tamagnColors.surfaceContainerLowest,
+      ...tamagnShadow,
+    }}>
+      {icon ? (
+        <View style={{ width: 40, height: 40, borderRadius: tamagnRadius.sm, backgroundColor: bgTint ?? "rgba(1,110,0,0.08)", justifyContent: "center", alignItems: "center", marginBottom: 8 }}>
+          <Text style={{ fontSize: 20 }}>{icon}</Text>
+        </View>
+      ) : null}
       <Text style={{ ...tamagnTypography.stat, color: color ?? tamagnColors.primary }}>{value}</Text>
       <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary, marginTop: 4 }}>{label}</Text>
     </View>

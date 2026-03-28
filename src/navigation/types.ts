@@ -1,13 +1,13 @@
-import type { MarketplaceCard, Order } from "../core/types/domain";
+import type { MarketplaceCard } from "../core/types/domain";
 
 export type RootStackParamList = {
   SignIn: undefined;
-  BuyerTabs: undefined;
+  BuyerTabs: { screen?: string } | undefined;
   MerchantTabs: undefined;
   ProductDetail: { product: MarketplaceCard };
   Checkout: undefined;
-  OrderDetail: { order: Order };
-  MerchantOrderDetail: { order: any };
+  OrderDetail: { orderId: string };
+  MerchantOrderDetail: { orderId: string };
   Reviews: undefined;
   Promotions: undefined;
 };

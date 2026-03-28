@@ -1,6 +1,6 @@
 import React from "react";
 import type { PropsWithChildren } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { tamagnColors, tamagnSpacing, tamagnTypography } from "../core/theme/tokens";
 
@@ -9,6 +9,7 @@ interface TamagnScreenProps {
   subtitle?: string;
   noPadding?: boolean;
   headerRight?: React.ReactNode;
+  onBack?: () => void;
 }
 
 export function TamagnScreen({
@@ -16,6 +17,7 @@ export function TamagnScreen({
   subtitle,
   noPadding,
   headerRight,
+  onBack,
   children,
 }: PropsWithChildren<TamagnScreenProps>): JSX.Element {
   const insets = useSafeAreaInsets();
@@ -24,16 +26,23 @@ export function TamagnScreen({
       <ScrollView
         contentContainerStyle={{
           paddingTop: insets.top + tamagnSpacing.md,
-          paddingBottom: insets.bottom + tamagnSpacing.xxl,
+          paddingBottom: insets.bottom + 80,
           paddingHorizontal: noPadding ? 0 : tamagnSpacing.md,
         }}
         showsVerticalScrollIndicator={false}
       >
-        {title ? (
-          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: tamagnSpacing.lg, paddingHorizontal: noPadding ? tamagnSpacing.md : 0 }}>
-            <View style={{ flex: 1 }}>
-              <Text style={{ ...tamagnTypography.screenTitle, color: tamagnColors.onSurface }}>{title}</Text>
-              {subtitle ? <Text style={{ ...tamagnTypography.body, color: tamagnColors.secondary, marginTop: 4 }}>{subtitle}</Text> : null}
+        {(title || onBack) ? (
+          <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", marginBottom: tamagnSpacing.lg, paddingHorizontal: noPadding ? tamagnSpacing.md : 0 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+              {onBack ? (
+                <Pressable onPress={onBack} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: tamagnColors.surfaceContainerLow, justifyContent: "center", alignItems: "center", marginRight: 12 }}>
+                  <Text style={{ fontSize: 18, color: tamagnColors.onSurface }}>←</Text>
+                </Pressable>
+              ) : null}
+              <View style={{ flex: 1 }}>
+                {title ? <Text style={{ ...tamagnTypography.screenTitle, color: tamagnColors.onSurface }}>{title}</Text> : null}
+                {subtitle ? <Text style={{ ...tamagnTypography.body, color: tamagnColors.secondary, marginTop: 2 }}>{subtitle}</Text> : null}
+              </View>
             </View>
             {headerRight}
           </View>

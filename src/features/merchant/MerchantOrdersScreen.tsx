@@ -1,122 +1,113 @@
 import React, { useState } from "react";
-import { Alert, Text, View } from "react-native";
-import { SectionCard } from "../../components/SectionCard";
-import { TamagnButton } from "../../components/TamagnButton";
+import { Alert, Pressable, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { TamagnScreen } from "../../components/TamagnScreen";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography } from "../../core/theme/tokens";
-import type { OrderStatus } from "../../core/types/domain";
+import { EmptyState } from "../../components/EmptyState";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
 
 interface MerchantOrder {
   id: string;
-  buyerName: string;
+  buyer: string;
   items: string;
   total: number;
-  status: OrderStatus;
-  createdAt: string;
+  status: "pending" | "preparing" | "shipped" | "delivered";
+  date: string;
 }
 
-const nextStatus: Partial<Record<OrderStatus, OrderStatus>> = {
-  placed: "confirmed",
-  confirmed: "preparing",
-  preparing: "readyForPickup",
-};
-
-const statusLabels: Record<string, { emoji: string; text: string }> = {
-  placed: { emoji: "🟡", text: "New Order" },
-  confirmed: { emoji: "🟢", text: "Confirmed" },
-  preparing: { emoji: "🔵", text: "Preparing" },
-  readyForPickup: { emoji: "📦", text: "Ready for Pickup" },
-  pickedUp: { emoji: "🚚", text: "Picked Up" },
-  inTransit: { emoji: "🛵", text: "In Transit" },
-  delivered: { emoji: "✅", text: "Delivered" },
+const statusFlow: MerchantOrder["status"][] = ["pending", "preparing", "shipped", "delivered"];
+const statusLabels: Record<string, { label: string; color: string; nextAction: string }> = {
+  pending: { label: "New Order", color: tamagnColors.tertiary, nextAction: "Accept & Prepare" },
+  preparing: { label: "Preparing", color: "#2196F3", nextAction: "Mark as Shipped" },
+  shipped: { label: "Shipped", color: "#9C27B0", nextAction: "Awaiting Delivery" },
+  delivered: { label: "Delivered", color: tamagnColors.primary, nextAction: "" },
 };
 
 const initialOrders: MerchantOrder[] = [
-  { id: "ORD-2001", buyerName: "Abebe T.", items: "Fresh Injera Pack ×3", total: 540, status: "placed", createdAt: new Date(Date.now() - 300000).toISOString() },
-  { id: "ORD-2002", buyerName: "Sara M.", items: "Berbere Spice Mix ×1", total: 250, status: "confirmed", createdAt: new Date(Date.now() - 1200000).toISOString() },
-  { id: "ORD-2003", buyerName: "Yohannes K.", items: "Organic Coffee ×2", total: 900, status: "preparing", createdAt: new Date(Date.now() - 2400000).toISOString() },
-  { id: "ORD-2000", buyerName: "Hana D.", items: "Roasted Coffee Bundle ×1", total: 320, status: "delivered", createdAt: new Date(Date.now() - 86400000).toISOString() },
+  { id: "ORD-2001", buyer: "Elias M.", items: "Sidama Coffee × 3", total: 1350, status: "pending", date: "Mar 28, 2026" },
+  { id: "ORD-2002", buyer: "Sara T.", items: "Berbere Spice × 2", total: 500, status: "preparing", date: "Mar 27, 2026" },
+  { id: "ORD-2003", buyer: "Abiy K.", items: "Honey (Wild)", total: 380, status: "shipped", date: "Mar 26, 2026" },
+  { id: "ORD-2004", buyer: "Hana B.", items: "Injera Pack × 4", total: 720, status: "delivered", date: "Mar 25, 2026" },
+  { id: "ORD-2005", buyer: "Dawit G.", items: "Handwoven Shemma", total: 1200, status: "delivered", date: "Mar 24, 2026" },
 ];
 
 export function MerchantOrdersScreen(): JSX.Element {
   const [orders, setOrders] = useState(initialOrders);
 
-  function advanceOrder(orderId: string) {
-    setOrders((prev) =>
-      prev.map((o) => {
-        if (o.id !== orderId) return o;
-        const next = nextStatus[o.status];
-        if (!next) return o;
-        Alert.alert("Status Updated", `${o.id} → ${statusLabels[next]?.text ?? next}`);
-        return { ...o, status: next };
-      })
-    );
+  function advanceStatus(orderId: string) {
+    setOrders((prev) => prev.map((o) => {
+      if (o.id !== orderId) return o;
+      const idx = statusFlow.indexOf(o.status);
+      if (idx < statusFlow.length - 1) return { ...o, status: statusFlow[idx + 1] };
+      return o;
+    }));
+    Alert.alert("Updated", "Order status advanced.");
   }
 
-  const active = orders.filter((o) => o.status !== "delivered" && o.status !== "cancelled");
+  const active = orders.filter((o) => o.status !== "delivered");
   const completed = orders.filter((o) => o.status === "delivered");
 
   return (
-    <TamagnScreen title="Orders" subtitle={`${active.length} active · ${completed.length} completed`}>
-      {/* Active */}
-      {active.length > 0 ? (
+    <TamagnScreen title="Manage Orders" subtitle={`${active.length} active`}>
+      {orders.length === 0 ? (
+        <EmptyState icon="📦" title="No orders yet" subtitle="When buyers place orders, they'll appear here" />
+      ) : (
         <>
-          <Text style={{ ...tamagnTypography.sectionTitle, color: tamagnColors.onSurface, marginBottom: tamagnSpacing.sm }}>Active Orders</Text>
-          {active.map((order) => {
-            const sl = statusLabels[order.status];
-            const canAdvance = !!nextStatus[order.status];
-            return (
-              <SectionCard key={order.id}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                      <Text style={{ ...tamagnTypography.cardTitle, color: tamagnColors.onSurface }}>{order.id}</Text>
-                      <View style={{ backgroundColor: tamagnColors.surfaceContainerLow, borderRadius: tamagnRadius.pill, paddingHorizontal: 8, paddingVertical: 2 }}>
-                        <Text style={{ fontSize: 11, fontWeight: "700" }}>{sl?.emoji} {sl?.text}</Text>
+          {active.length > 0 ? (
+            <>
+              <Text style={{ ...tamagnTypography.label, color: tamagnColors.secondary, marginBottom: tamagnSpacing.sm }}>ACTIVE ORDERS</Text>
+              {active.map((order) => {
+                const sl = statusLabels[order.status];
+                return (
+                  <View key={order.id} style={{ backgroundColor: tamagnColors.surfaceContainerLowest, borderRadius: tamagnRadius.xl, padding: tamagnSpacing.md, marginBottom: tamagnSpacing.sm, ...tamagnShadow }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
+                      <View>
+                        <Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.secondary }}>{order.id}</Text>
+                        <Text style={{ ...tamagnTypography.caption, color: tamagnColors.outlineVariant }}>{order.date}</Text>
+                      </View>
+                      <View style={{ backgroundColor: sl.color + "18", borderRadius: tamagnRadius.pill, paddingHorizontal: 10, paddingVertical: 4 }}>
+                        <Text style={{ ...tamagnTypography.captionBold, color: sl.color }}>{sl.label}</Text>
                       </View>
                     </View>
-                    <Text style={{ ...tamagnTypography.body, color: tamagnColors.onSurface, marginTop: 4 }}>{order.buyerName}</Text>
-                    <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>{order.items}</Text>
-                    <Text style={{ ...tamagnTypography.price, color: tamagnColors.primary, marginTop: 4 }}>ETB {order.total}</Text>
+                    <Text style={{ ...tamagnTypography.cardTitle, color: tamagnColors.onSurface }}>{order.items}</Text>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 4 }}>
+                      <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>Buyer: {order.buyer}</Text>
+                      <Text style={{ ...tamagnTypography.price, color: tamagnColors.primary }}>{order.total.toLocaleString()} ETB</Text>
+                    </View>
+                    {sl.nextAction ? (
+                      <Pressable onPress={() => advanceStatus(order.id)} style={{ marginTop: tamagnSpacing.sm }}>
+                        <LinearGradient
+                          colors={[...GRADIENT_PRIMARY]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={{ borderRadius: tamagnRadius.md, paddingVertical: 12, alignItems: "center" }}
+                        >
+                          <Text style={{ color: "#fff", fontWeight: "800", fontSize: 13 }}>{sl.nextAction}</Text>
+                        </LinearGradient>
+                      </Pressable>
+                    ) : null}
                   </View>
-                </View>
-                {canAdvance ? (
-                  <View style={{ marginTop: tamagnSpacing.sm }}>
-                    <TamagnButton
-                      title={`Mark as ${statusLabels[nextStatus[order.status]!]?.text ?? "Next"}`}
-                      onPress={() => advanceOrder(order.id)}
-                      fullWidth
-                    />
-                  </View>
-                ) : null}
-              </SectionCard>
-            );
-          })}
-        </>
-      ) : null}
+                );
+              })}
+            </>
+          ) : null}
 
-      {/* Completed */}
-      {completed.length > 0 ? (
-        <>
-          <Text style={{ ...tamagnTypography.sectionTitle, color: tamagnColors.onSurface, marginTop: tamagnSpacing.md, marginBottom: tamagnSpacing.sm }}>
-            Completed
-          </Text>
-          {completed.map((order) => (
-            <SectionCard key={order.id}>
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <View>
-                  <Text style={{ ...tamagnTypography.cardTitle, color: tamagnColors.onSurface }}>{order.id}</Text>
-                  <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>{order.buyerName} · {order.items}</Text>
+          {completed.length > 0 ? (
+            <>
+              <Text style={{ ...tamagnTypography.label, color: tamagnColors.secondary, marginTop: tamagnSpacing.lg, marginBottom: tamagnSpacing.sm }}>COMPLETED</Text>
+              {completed.map((order) => (
+                <View key={order.id} style={{ backgroundColor: tamagnColors.surfaceContainerLowest, borderRadius: tamagnRadius.xl, padding: tamagnSpacing.md, marginBottom: tamagnSpacing.sm, opacity: 0.7 }}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 6 }}>
+                    <Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.secondary }}>{order.id}</Text>
+                    <Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.primary }}>✓ Delivered</Text>
+                  </View>
+                  <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.onSurface }}>{order.items}</Text>
+                  <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary, marginTop: 2 }}>{order.buyer} · {order.total.toLocaleString()} ETB</Text>
                 </View>
-                <View style={{ alignItems: "flex-end" }}>
-                  <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.primary }}>ETB {order.total}</Text>
-                  <Text style={{ ...tamagnTypography.caption, color: tamagnColors.primary }}>✅ Delivered</Text>
-                </View>
-              </View>
-            </SectionCard>
-          ))}
+              ))}
+            </>
+          ) : null}
         </>
-      ) : null}
+      )}
     </TamagnScreen>
   );
 }
