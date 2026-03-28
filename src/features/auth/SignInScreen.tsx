@@ -104,7 +104,7 @@ export function SignInScreen(): JSX.Element {
               <TextInput
                 value={phone}
                 onChangeText={setPhone}
-                placeholder="911 234 567"
+                placeholder="711 234 567"
                 placeholderTextColor={tamagnColors.outlineVariant}
                 keyboardType="phone-pad"
                 style={{ flex: 1, paddingVertical: 14, paddingHorizontal: 12, fontSize: 15, fontWeight: "600", color: tamagnColors.onSurface }}

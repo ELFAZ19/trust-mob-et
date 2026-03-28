@@ -11,7 +11,7 @@ export const PRODUCT_IMAGES: Record<string, string> = {
   electronics: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=400&fit=crop",
   clothing: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=400&h=400&fit=crop",
   food: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=400&fit=crop",
-  home: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop",
+  home: "https://images.unsplash.com/photo-1556907114-f6e7ad7d3136?w=400&h=400&fit=crop",
   services: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=400&fit=crop",
 };
 
@@ -26,7 +26,7 @@ export const MERCHANT_IMAGES: Record<string, string> = {
 export const CATEGORY_IMAGES: Record<string, string> = {
   Food: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop",
   Electronics: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=200&h=200&fit=crop",
-  Home: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop",
+  Home: "https://images.unsplash.com/photo-1556907114-f6e7ad7d3136?w=200&h=200&fit=crop",
   Services: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=200&h=200&fit=crop",
   Coffee: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=200&h=200&fit=crop",
   Spices: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=200&h=200&fit=crop",
