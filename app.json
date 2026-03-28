@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "ታማኝ",
+    "slug": "tamagn-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "package": "com.tamagn.mobile"
+    },
+    "ios": {
+      "bundleIdentifier": "com.tamagn.mobile"
+    }
+  }
+}
