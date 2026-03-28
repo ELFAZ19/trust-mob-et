@@ -14,13 +14,9 @@ export async function persistSession(session: LocalSession): Promise<void> {
 
 export async function readSession(): Promise<LocalSession | null> {
   const raw = await secureStore.get(SESSION_KEY);
-  if (!raw) {
-    return null;
-  }
-
+  if (!raw) return null;
   try {
-    const parsed = JSON.parse(raw) as LocalSession;
-    return parsed;
+    return JSON.parse(raw) as LocalSession;
   } catch {
     await secureStore.remove(SESSION_KEY);
     return null;

@@ -19,9 +19,13 @@ export function AuthProvider({ children }: PropsWithChildren): JSX.Element {
 
   useEffect(() => {
     (async () => {
-      const local = await readSession();
-      if (local) {
-        setProfile(local.profile);
+      try {
+        const local = await readSession();
+        if (local) {
+          setProfile(local.profile);
+        }
+      } catch {
+        // SecureStore may fail on web -- handled gracefully
       }
       setIsBooting(false);
     })();
@@ -39,7 +43,11 @@ export function AuthProvider({ children }: PropsWithChildren): JSX.Element {
       },
       async signOut() {
         await clearSession();
-        await supabaseClient.auth.signOut();
+        try {
+          await supabaseClient.auth.signOut();
+        } catch {
+          // offline-safe
+        }
         setProfile(null);
       }
     }),

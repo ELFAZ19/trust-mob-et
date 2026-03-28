@@ -1,39 +1,91 @@
 import React, { useState } from "react";
-import { Alert, Button, ScrollView, Text, TextInput } from "react-native";
+import { Alert, Pressable, Text, TextInput, View } from "react-native";
 import { SectionCard } from "../../components/SectionCard";
-import { supabaseClient } from "../../core/api/supabaseClient";
+import { TamagnButton } from "../../components/TamagnButton";
+import { TamagnScreen } from "../../components/TamagnScreen";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography } from "../../core/theme/tokens";
+import type { Review } from "../../core/types/domain";
+
+const existingReviews: Review[] = [
+  { id: "r1", orderId: "ORD-1000", merchantId: "m3", buyerName: "Abebe T.", rating: 5, comment: "Excellent coffee, very fast delivery!", createdAt: new Date(Date.now() - 86400000).toISOString() },
+  { id: "r2", orderId: "ORD-0999", merchantId: "m1", buyerName: "Sara M.", rating: 4, comment: "Good injera, packaging could be better.", createdAt: new Date(Date.now() - 172800000).toISOString() },
+];
 
 export function ReviewsScreen(): JSX.Element {
   const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState("Reliable service and quick delivery.");
+  const [comment, setComment] = useState("");
+  const [reviews, setReviews] = useState(existingReviews);
 
-  async function submitReview() {
-    const payload = {
-      merchant_id: "merchant-demo",
-      order_id: "demo-order",
+  function handleSubmit() {
+    if (!comment.trim()) {
+      Alert.alert("Please add a comment");
+      return;
+    }
+    const newReview: Review = {
+      id: `r-${Date.now()}`,
+      orderId: "latest",
+      merchantId: "m1",
+      buyerName: "You",
       rating,
-      comment
+      comment: comment.trim(),
+      createdAt: new Date().toISOString(),
     };
-    await supabaseClient.from("reviews").insert(payload);
-    Alert.alert("Review Submitted", "Thanks for contributing to merchant trust score.");
+    setReviews([newReview, ...reviews]);
+    setComment("");
+    setRating(5);
+    Alert.alert("Review Submitted", "Thanks for contributing to merchant trust scores!");
   }
 
   return (
-    <ScrollView contentContainerStyle={{ padding: 16 }}>
-      <Text style={{ fontSize: 22, fontWeight: "700", marginBottom: 12 }}>Ratings and Reviews</Text>
-
-      <SectionCard title="Submit Review">
-        <Text>Star rating: {rating}</Text>
+    <TamagnScreen title="Reviews" subtitle="Rate your experience">
+      {/* Submit Review */}
+      <SectionCard title="Write a Review">
+        <Text style={{ ...tamagnTypography.label, color: tamagnColors.outline, marginBottom: 8 }}>YOUR RATING</Text>
+        <View style={{ flexDirection: "row", gap: 8, marginBottom: tamagnSpacing.md }}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Pressable key={star} onPress={() => setRating(star)}>
+              <Text style={{ fontSize: 28 }}>{star <= rating ? "⭐" : "☆"}</Text>
+            </Pressable>
+          ))}
+        </View>
         <TextInput
           value={comment}
           onChangeText={setComment}
+          placeholder="Share your experience..."
+          placeholderTextColor={tamagnColors.outlineVariant}
           multiline
-          style={{ borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 10, marginTop: 8 }}
+          style={{
+            backgroundColor: tamagnColors.surfaceContainerLow,
+            borderRadius: tamagnRadius.md,
+            padding: 12,
+            fontSize: 14,
+            color: tamagnColors.onSurface,
+            minHeight: 80,
+            textAlignVertical: "top",
+            marginBottom: tamagnSpacing.md,
+          }}
         />
-        <Button title="Increase Star" onPress={() => setRating((prev) => Math.min(5, prev + 1))} />
-        <Button title="Decrease Star" onPress={() => setRating((prev) => Math.max(1, prev - 1))} />
-        <Button title="Submit" onPress={submitReview} />
+        <TamagnButton title="Submit Review" onPress={handleSubmit} />
       </SectionCard>
-    </ScrollView>
+
+      {/* Past Reviews */}
+      <Text style={{ ...tamagnTypography.sectionTitle, color: tamagnColors.onSurface, marginBottom: tamagnSpacing.sm }}>Recent Reviews</Text>
+      {reviews.map((review) => (
+        <SectionCard key={review.id}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+            <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.onSurface }}>{review.buyerName}</Text>
+            <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>
+              {new Date(review.createdAt).toLocaleDateString()}
+            </Text>
+          </View>
+          <View style={{ flexDirection: "row", gap: 2, marginVertical: 4 }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Text key={i} style={{ fontSize: 14 }}>{i < review.rating ? "⭐" : "☆"}</Text>
+            ))}
+          </View>
+          <Text style={{ ...tamagnTypography.body, color: tamagnColors.onSurface }}>{review.comment}</Text>
+        </SectionCard>
+      ))}
+    </TamagnScreen>
   );
 }

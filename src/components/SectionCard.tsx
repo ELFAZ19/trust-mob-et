@@ -1,35 +1,34 @@
 import React from "react";
 import type { PropsWithChildren } from "react";
-import { Text, View } from "react-native";
-import { tamagnColors, tamagnRadius, tamagnSpacing } from "../core/theme/tokens";
+import { Pressable, Text, View } from "react-native";
+import { tamagnColors, tamagnRadius, tamagnShadow, tamagnSpacing, tamagnTypography } from "../core/theme/tokens";
 
 interface SectionCardProps {
-  title: string;
+  title?: string;
   subtitle?: string;
+  onPress?: () => void;
 }
 
-export function SectionCard({
-  title,
-  subtitle,
-  children
-}: PropsWithChildren<SectionCardProps>): JSX.Element {
+export function SectionCard({ title, subtitle, onPress, children }: PropsWithChildren<SectionCardProps>): JSX.Element {
+  const Wrapper = onPress ? Pressable : View;
   return (
-    <View
+    <Wrapper
+      onPress={onPress}
       style={{
         borderRadius: tamagnRadius.xl,
         padding: tamagnSpacing.md,
         marginBottom: tamagnSpacing.md,
         backgroundColor: tamagnColors.surfaceContainerLowest,
-        shadowColor: tamagnColors.onSurface,
-        shadowOpacity: 0.06,
-        shadowRadius: 24,
-        shadowOffset: { width: 0, height: 8 },
-        elevation: 2
+        ...tamagnShadow,
       }}
     >
-      <Text style={{ fontSize: 17, fontWeight: "800", color: tamagnColors.onSurface }}>{title}</Text>
-      {subtitle ? <Text style={{ marginTop: 4, color: tamagnColors.secondary }}>{subtitle}</Text> : null}
-      <View style={{ marginTop: 10 }}>{children}</View>
-    </View>
+      {title ? (
+        <View style={{ marginBottom: children ? tamagnSpacing.sm : 0 }}>
+          <Text style={{ ...tamagnTypography.cardTitle, color: tamagnColors.onSurface }}>{title}</Text>
+          {subtitle ? <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary, marginTop: 2 }}>{subtitle}</Text> : null}
+        </View>
+      ) : null}
+      {children}
+    </Wrapper>
   );
 }
