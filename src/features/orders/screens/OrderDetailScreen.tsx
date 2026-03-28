@@ -2,22 +2,10 @@ import React from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Icon } from "../../components/Icon";
-import { SectionCard } from "../../components/SectionCard";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
-
-const steps = [
-  { label: "Order Placed", done: true, date: "Mar 27, 10:30 AM" },
-  { label: "Confirmed", done: true, date: "Mar 27, 10:45 AM" },
-  { label: "Preparing", done: true, date: "Mar 27, 11:00 AM" },
-  { label: "Shipped", done: true, date: "Mar 27, 12:15 PM" },
-  { label: "Delivered", done: false, date: "" },
-];
-
-const items = [
-  { name: "Sidama Coffee", qty: 2, price: 450 },
-  { name: "Fresh Injera Pack", qty: 1, price: 180 },
-];
+import { Icon } from "../../../components/Icon";
+import { SectionCard } from "../../../components/SectionCard";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, GRADIENT_PRIMARY } from "../../../core/theme/tokens";
+import { ORDER_DETAIL_STEPS, ORDER_DETAIL_ITEMS } from "../../../data/mock";
 
 export function OrderDetailScreen({ navigation }: { navigation: any }): JSX.Element {
   const insets = useSafeAreaInsets();
@@ -38,7 +26,7 @@ export function OrderDetailScreen({ navigation }: { navigation: any }): JSX.Elem
 
         {/* Timeline */}
         <SectionCard title="Delivery Progress">
-          {steps.map((step, i) => (
+          {ORDER_DETAIL_STEPS.map((step, i) => (
             <View key={step.label} style={{ flexDirection: "row", gap: 14 }}>
               {/* Circle + Line */}
               <View style={{ alignItems: "center", width: 24 }}>
@@ -54,7 +42,7 @@ export function OrderDetailScreen({ navigation }: { navigation: any }): JSX.Elem
                 }}>
                   {step.done ? <Icon name="check" size={16} color="#fff" /> : null}
                 </View>
-                {i < steps.length - 1 ? (
+                {i < ORDER_DETAIL_STEPS.length - 1 ? (
                   <View style={{ width: 2, flex: 1, minHeight: 28, backgroundColor: step.done ? tamagnColors.primary : tamagnColors.surfaceContainerHigh }} />
                 ) : null}
               </View>
@@ -69,7 +57,7 @@ export function OrderDetailScreen({ navigation }: { navigation: any }): JSX.Elem
 
         {/* Items */}
         <SectionCard title="Items">
-          {items.map((item) => (
+          {ORDER_DETAIL_ITEMS.map((item) => (
             <View key={item.name} style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 8 }}>
               <Text style={{ ...tamagnTypography.body, color: tamagnColors.onSurface }}>{item.name} ×{item.qty}</Text>
               <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.primary }}>{(item.price * item.qty).toLocaleString()} ETB</Text>

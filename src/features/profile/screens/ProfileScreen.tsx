@@ -1,12 +1,12 @@
 import React from "react";
 import { Alert, Pressable, Text, View } from "react-native";
-import { Icon } from "../../components/Icon";
-import type { IconName } from "../../components/Icon";
-import { TamagnScreen } from "../../components/TamagnScreen";
-import { SectionCard } from "../../components/SectionCard";
-import { TrustBadge } from "../../components/TrustBadge";
-import { useAuth } from "../../core/auth/AuthContext";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow } from "../../core/theme/tokens";
+import { Icon } from "../../../components/Icon";
+import type { IconName } from "../../../components/Icon";
+import { TamagnScreen } from "../../../components/TamagnScreen";
+import { SectionCard } from "../../../components/SectionCard";
+import { TrustBadge } from "../../../components/TrustBadge";
+import { useAuth } from "../../../core/auth/AuthContext";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow } from "../../../core/theme/tokens";
 
 const buyerSettings: { icon: IconName; label: string; subtitle: string }[] = [
   { icon: "location", label: "Delivery Addresses", subtitle: "Manage your saved addresses" },

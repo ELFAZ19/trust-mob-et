@@ -8,22 +8,17 @@ import { useAuth } from "../core/auth/AuthContext";
 import { useCart } from "../core/cart/CartContext";
 import { tamagnColors, tamagnRadius, tamagnTypography } from "../core/theme/tokens";
 
-import { SignInScreen } from "../features/auth/SignInScreen";
-import { HomeScreen } from "../features/home/HomeScreen";
-import { DiscoveryScreen } from "../features/discovery/DiscoveryScreen";
-import { ProductDetailScreen } from "../features/discovery/ProductDetailScreen";
-import { CartScreen } from "../features/cart/CartScreen";
-import { CheckoutScreen } from "../features/cart/CheckoutScreen";
-import { OrdersListScreen } from "../features/orders/OrdersListScreen";
-import { OrderDetailScreen } from "../features/orders/OrderDetailScreen";
-import { ReviewsScreen } from "../features/reviews/ReviewsScreen";
-import { ProfileScreen } from "../features/profile/ProfileScreen";
+import { SignInScreen } from "../features/auth";
+import { HomeScreen } from "../features/home";
+import { DiscoveryScreen, ProductDetailScreen } from "../features/discovery";
+import { CartScreen, CheckoutScreen } from "../features/cart";
+import { OrdersListScreen, OrderDetailScreen } from "../features/orders";
+import { ReviewsScreen } from "../features/reviews";
+import { ProfileScreen } from "../features/profile";
 
-import { MerchantDashboardScreen } from "../features/merchant/MerchantDashboardScreen";
-import { CatalogManagementScreen } from "../features/catalog/CatalogManagementScreen";
-import { MerchantOrdersScreen } from "../features/merchant/MerchantOrdersScreen";
-import { MerchantAnalyticsScreen } from "../features/merchant/MerchantAnalyticsScreen";
-import { PromotionsScreen } from "../features/promotions/PromotionsScreen";
+import { MerchantDashboardScreen, MerchantOrdersScreen, MerchantAnalyticsScreen } from "../features/merchant";
+import { CatalogManagementScreen } from "../features/catalog";
+import { PromotionsScreen } from "../features/promotions";
 
 import type { RootStackParamList } from "./types";
 

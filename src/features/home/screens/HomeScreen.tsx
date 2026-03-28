@@ -1,35 +1,15 @@
 import React from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Icon } from "../../components/Icon";
-import { SectionCard } from "../../components/SectionCard";
-import { TamagnScreen } from "../../components/TamagnScreen";
-import { TrustBadge } from "../../components/TrustBadge";
-import { useAuth } from "../../core/auth/AuthContext";
-import { useCart } from "../../core/cart/CartContext";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_DARK } from "../../core/theme/tokens";
-import { CATEGORY_IMAGES, getMerchantImage, HERO_IMAGES, getProductImage } from "../../core/constants/images";
-import type { MarketplaceCard } from "../../core/types/domain";
-import type { IconName } from "../../components/Icon";
-
-const categories: { icon: IconName; label: string; color: string }[] = [
-  { icon: "food", label: "Food", color: "rgba(1,110,0,0.08)" },
-  { icon: "electronics", label: "Electronics", color: "rgba(246,135,0,0.08)" },
-  { icon: "home", label: "Home", color: "rgba(226,223,222,0.6)" },
-  { icon: "tools", label: "Services", color: "rgba(119,255,97,0.15)" },
-];
-
-const merchants = [
-  { name: "Bole Central Grocery", rating: 4.8, distance: "1.2km", verified: true, img: "grocery" as const },
-  { name: "NextGen Electronics", rating: 4.9, distance: "0.5km", verified: true, img: "electronics" as const },
-  { name: "Ethio Roast Coffee", rating: 4.7, distance: "2.3km", verified: false, img: "cafe" as const },
-];
-
-const featured: MarketplaceCard[] = [
-  { id: "f1", title: "Sidama Specialty Coffee", price: 450, category: "Coffee", merchantId: "m1", merchantName: "Harar Beans", rating: 4.9, reviewCount: 203, distanceKm: 1.2, etaMinutes: 28, trustScore: 96, inStock: true, description: "Premium single-origin beans" },
-  { id: "f2", title: "Fresh Injera Pack", price: 180, category: "Food", merchantId: "m2", merchantName: "Selam Foods", rating: 4.8, reviewCount: 124, distanceKm: 1.3, etaMinutes: 25, trustScore: 92, inStock: true, description: "Daily baked fresh injera" },
-  { id: "f3", title: "Handwoven Shemma", price: 1200, category: "Clothing", merchantId: "m3", merchantName: "Dorze Weavers", rating: 4.7, reviewCount: 56, distanceKm: 5.0, etaMinutes: 60, trustScore: 88, inStock: true, description: "Traditional cotton garment" },
-];
+import { Icon } from "../../../components/Icon";
+import { SectionCard } from "../../../components/SectionCard";
+import { TamagnScreen } from "../../../components/TamagnScreen";
+import { TrustBadge } from "../../../components/TrustBadge";
+import { useAuth } from "../../../core/auth/AuthContext";
+import { useCart } from "../../../core/cart/CartContext";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_DARK } from "../../../core/theme/tokens";
+import { getMerchantImage, HERO_IMAGES, getProductImage } from "../../../core/constants/images";
+import { HOME_CATEGORIES, FEATURED_PRODUCTS, SERVICES, MOCK_MERCHANTS } from "../../../data/mock";
 
 export function HomeScreen({ navigation }: { navigation: any }): JSX.Element {
   const { profile } = useAuth();
@@ -95,7 +75,7 @@ export function HomeScreen({ navigation }: { navigation: any }): JSX.Element {
         <Pressable><Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.primary }}>View All</Text></Pressable>
       </View>
       <View style={{ flexDirection: "row", gap: 10, marginBottom: tamagnSpacing.xl }}>
-        {categories.map((cat) => (
+        {HOME_CATEGORIES.map((cat) => (
           <Pressable
             key={cat.label}
             onPress={() => navigation.navigate("Discovery")}
@@ -122,7 +102,7 @@ export function HomeScreen({ navigation }: { navigation: any }): JSX.Element {
         </View>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: tamagnSpacing.xl, marginHorizontal: -tamagnSpacing.md }} contentContainerStyle={{ paddingHorizontal: tamagnSpacing.md, gap: 14 }}>
-        {merchants.map((m, idx) => (
+        {MOCK_MERCHANTS.map((m, idx) => (
           <Pressable key={m.name} onPress={() => navigation.navigate("Discovery")} style={{ width: 220 }}>
             <View style={{ height: 130, borderRadius: tamagnRadius.xxl, overflow: "hidden", marginBottom: 8 }}>
               <Image source={{ uri: getMerchantImage(idx) }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
@@ -166,7 +146,7 @@ export function HomeScreen({ navigation }: { navigation: any }): JSX.Element {
 
       {/* Featured Products */}
       <Text style={{ ...tamagnTypography.sectionTitle, color: tamagnColors.onSurface, marginBottom: tamagnSpacing.md }}>Popular Near You</Text>
-      {featured.map((item) => (
+      {FEATURED_PRODUCTS.map((item) => (
         <SectionCard key={item.id} onPress={() => navigation.navigate("ProductDetail", { product: item })}>
           <View style={{ flexDirection: "row", gap: 14 }}>
             <View style={{ width: 72, height: 72, borderRadius: tamagnRadius.lg, overflow: "hidden" }}>
@@ -191,10 +171,7 @@ export function HomeScreen({ navigation }: { navigation: any }): JSX.Element {
 
       {/* Recommended Services */}
       <Text style={{ ...tamagnTypography.sectionTitle, color: tamagnColors.onSurface, marginTop: tamagnSpacing.md, marginBottom: tamagnSpacing.md }}>Recommended Services</Text>
-      {[
-        { title: "Home Electrical Repair", sub: "Verified Professionals · Starts ETB 450" },
-        { title: "Express Laundry", sub: "Next Day Delivery · ETB 25 / kg" },
-      ].map((svc) => (
+      {SERVICES.map((svc) => (
         <View key={svc.title} style={{ flexDirection: "row", alignItems: "center", gap: 14, backgroundColor: tamagnColors.surfaceContainerLowest, padding: tamagnSpacing.md, borderRadius: tamagnRadius.lg, marginBottom: tamagnSpacing.sm, ...tamagnShadow }}>
           <View style={{ width: 52, height: 52, borderRadius: tamagnRadius.sm, overflow: "hidden" }}>
             <Image source={{ uri: getProductImage("services") }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />

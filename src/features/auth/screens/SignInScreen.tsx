@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Image, Pressable, Text, TextInput, View, Switch, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Icon } from "../../components/Icon";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, GRADIENT_PRIMARY, tamagnShadowHeavy, tamagnShadow } from "../../core/theme/tokens";
-import { useAuth } from "../../core/auth/AuthContext";
-import type { UserRole } from "../../core/types/domain";
+import { Icon } from "../../../components/Icon";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, GRADIENT_PRIMARY, tamagnShadowHeavy, tamagnShadow } from "../../../core/theme/tokens";
+import { useAuth } from "../../../core/auth/AuthContext";
+import type { UserRole } from "../../../core/types/domain";
 
 const roles: { key: UserRole; label: string; icon: "cart" | "store" }[] = [
   { key: "buyer", label: "Buyer", icon: "cart" },

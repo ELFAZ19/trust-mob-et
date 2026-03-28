@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Alert, Pressable, Text, TextInput, View, Switch } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { TamagnScreen } from "../../components/TamagnScreen";
-import { SectionCard } from "../../components/SectionCard";
-import { EmptyState } from "../../components/EmptyState";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
+import { TamagnScreen } from "../../../components/TamagnScreen";
+import { SectionCard } from "../../../components/SectionCard";
+import { EmptyState } from "../../../components/EmptyState";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../../core/theme/tokens";
 
 interface CatalogProduct {
   id: string;

@@ -1,18 +1,10 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
-import { TamagnScreen } from "../../components/TamagnScreen";
-import { EmptyState } from "../../components/EmptyState";
-import { TrustBadge } from "../../components/TrustBadge";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow } from "../../core/theme/tokens";
-
-interface MockOrder {
-  id: string;
-  items: string;
-  total: number;
-  status: "processing" | "shipped" | "delivered" | "cancelled";
-  date: string;
-  merchantName: string;
-}
+import { TamagnScreen } from "../../../components/TamagnScreen";
+import { EmptyState } from "../../../components/EmptyState";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow } from "../../../core/theme/tokens";
+import { MOCK_BUYER_ORDERS } from "../../../data/mock";
+import type { MockBuyerOrder } from "../../../data/mock";
 
 const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
   processing: { label: "Processing", color: tamagnColors.tertiary, bg: "rgba(246,135,0,0.1)" },
@@ -21,20 +13,13 @@ const statusConfig: Record<string, { label: string; color: string; bg: string }>
   cancelled: { label: "Cancelled", color: tamagnColors.error, bg: "rgba(186,26,26,0.1)" },
 };
 
-const mockOrders: MockOrder[] = [
-  { id: "ORD-1001", items: "Sidama Coffee × 2, Fresh Injera Pack × 1", total: 1080, status: "shipped", date: "Mar 27, 2026", merchantName: "Harar Beans" },
-  { id: "ORD-1002", items: "Samsung Galaxy A55", total: 18500, status: "processing", date: "Mar 26, 2026", merchantName: "NextGen Electronics" },
-  { id: "ORD-1003", items: "Berbere Spice Mix × 3", total: 750, status: "delivered", date: "Mar 24, 2026", merchantName: "Merkato Finest" },
-  { id: "ORD-1004", items: "Handwoven Shemma", total: 1200, status: "delivered", date: "Mar 20, 2026", merchantName: "Dorze Weavers" },
-];
-
 export function OrdersListScreen({ navigation }: { navigation: any }): JSX.Element {
-  const active = mockOrders.filter((o) => o.status !== "delivered" && o.status !== "cancelled");
-  const past = mockOrders.filter((o) => o.status === "delivered" || o.status === "cancelled");
+  const active = MOCK_BUYER_ORDERS.filter((o) => o.status !== "delivered" && o.status !== "cancelled");
+  const past = MOCK_BUYER_ORDERS.filter((o) => o.status === "delivered" || o.status === "cancelled");
 
   return (
     <TamagnScreen title="Orders">
-      {mockOrders.length === 0 ? (
+      {MOCK_BUYER_ORDERS.length === 0 ? (
         <EmptyState icon="package" title="No orders yet" subtitle="Your order history will appear here" />
       ) : (
         <>
@@ -57,7 +42,7 @@ export function OrdersListScreen({ navigation }: { navigation: any }): JSX.Eleme
   );
 }
 
-function OrderCard({ order, onPress }: { order: MockOrder; onPress: () => void }) {
+function OrderCard({ order, onPress }: { order: MockBuyerOrder; onPress: () => void }) {
   const sc = statusConfig[order.status];
   return (
     <Pressable

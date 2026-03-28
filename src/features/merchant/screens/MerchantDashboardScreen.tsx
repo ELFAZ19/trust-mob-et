@@ -1,26 +1,14 @@
 import React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { SectionCard } from "../../components/SectionCard";
-import { StatCard } from "../../components/StatCard";
-import { TamagnScreen } from "../../components/TamagnScreen";
-import { Icon } from "../../components/Icon";
-import { TrustBadge } from "../../components/TrustBadge";
-import { useAuth } from "../../core/auth/AuthContext";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY, GRADIENT_DARK } from "../../core/theme/tokens";
-
-const recentOrders = [
-  { id: "ORD-2001", buyer: "Elias M.", items: "Sidama Coffee × 3", total: 1350, status: "New", statusColor: tamagnColors.tertiary },
-  { id: "ORD-2002", buyer: "Sara T.", items: "Berbere Spice × 2", total: 500, status: "Shipped", statusColor: "#2196F3" },
-  { id: "ORD-2003", buyer: "Abiy K.", items: "Honey (Wild)", total: 380, status: "Delivered", statusColor: tamagnColors.primary },
-];
-
-const quickActions = [
-  { icon: "📋", label: "Catalog", screen: "Catalog" },
-  { icon: "📈", label: "Analytics", screen: "Analytics" },
-  { icon: "🚀", label: "Promote", screen: "Promotions" },
-  { icon: "📦", label: "Orders", screen: "MerchantOrders" },
-];
+import { SectionCard } from "../../../components/SectionCard";
+import { StatCard } from "../../../components/StatCard";
+import { TamagnScreen } from "../../../components/TamagnScreen";
+import { Icon } from "../../../components/Icon";
+import { TrustBadge } from "../../../components/TrustBadge";
+import { useAuth } from "../../../core/auth/AuthContext";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_DARK } from "../../../core/theme/tokens";
+import { MERCHANT_RECENT_ORDERS, MERCHANT_QUICK_ACTIONS } from "../../../data/mock";
 
 export function MerchantDashboardScreen({ navigation }: { navigation: any }): JSX.Element {
   const { profile } = useAuth();
@@ -81,7 +69,7 @@ export function MerchantDashboardScreen({ navigation }: { navigation: any }): JS
 
       {/* Quick Actions */}
       <View style={{ flexDirection: "row", gap: 10, marginBottom: tamagnSpacing.lg }}>
-        {quickActions.map((action) => (
+        {MERCHANT_QUICK_ACTIONS.map((action) => (
           <Pressable
             key={action.label}
             onPress={() => {
@@ -103,7 +91,7 @@ export function MerchantDashboardScreen({ navigation }: { navigation: any }): JS
           <Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.primary }}>View All</Text>
         </Pressable>
       </View>
-      {recentOrders.map((order) => (
+      {MERCHANT_RECENT_ORDERS.map((order) => (
         <SectionCard key={order.id}>
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 6 }}>
             <Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.secondary }}>{order.id}</Text>

@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Icon } from "../../components/Icon";
-import { SectionCard } from "../../components/SectionCard";
-import { TrustBadge } from "../../components/TrustBadge";
-import { QuantityStepper } from "../../components/QuantityStepper";
-import { useCart } from "../../core/cart/CartContext";
-import { getProductImage, getMerchantImage } from "../../core/constants/images";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
-import { getTrustTier } from "../trust/trustRanking";
-import type { MarketplaceCard } from "../../core/types/domain";
+import { Icon } from "../../../components/Icon";
+import { SectionCard } from "../../../components/SectionCard";
+import { TrustBadge } from "../../../components/TrustBadge";
+import { QuantityStepper } from "../../../components/QuantityStepper";
+import { useCart } from "../../../core/cart/CartContext";
+import { getProductImage, getMerchantImage } from "../../../core/constants/images";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../../core/theme/tokens";
+import { getTrustTier } from "../../trust/trustRanking";
+import type { MarketplaceCard } from "../../../core/types/domain";
 
 export function ProductDetailScreen({ route, navigation }: { route: any; navigation: any }): JSX.Element {
   const product: MarketplaceCard = route.params.product;

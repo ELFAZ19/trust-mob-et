@@ -1,15 +1,10 @@
 import React, { useState } from "react";
 import { Alert, Pressable, Text, TextInput, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { TamagnScreen } from "../../components/TamagnScreen";
-import { SectionCard } from "../../components/SectionCard";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
-
-const pastReviews = [
-  { id: "r1", merchantName: "Harar Beans", product: "Sidama Coffee", rating: 5, comment: "Excellent quality, fast delivery!", date: "Mar 25, 2026" },
-  { id: "r2", merchantName: "Merkato Finest", product: "Berbere Spice Mix", rating: 4, comment: "Good spice blend, slightly delayed.", date: "Mar 20, 2026" },
-  { id: "r3", merchantName: "Dorze Weavers", product: "Handwoven Shemma", rating: 5, comment: "Beautiful craftsmanship, worth every birr.", date: "Mar 15, 2026" },
-];
+import { TamagnScreen } from "../../../components/TamagnScreen";
+import { SectionCard } from "../../../components/SectionCard";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../../core/theme/tokens";
+import { MOCK_REVIEWS } from "../../../data/mock";
 
 export function ReviewsScreen({ navigation }: { navigation: any }): JSX.Element {
   const [rating, setRating] = useState(0);
@@ -69,7 +64,7 @@ export function ReviewsScreen({ navigation }: { navigation: any }): JSX.Element 
 
       {/* Past Reviews */}
       <Text style={{ ...tamagnTypography.sectionTitle, color: tamagnColors.onSurface, marginBottom: tamagnSpacing.sm }}>Your Reviews</Text>
-      {pastReviews.map((review) => (
+      {MOCK_REVIEWS.map((review) => (
         <View key={review.id} style={{ backgroundColor: tamagnColors.surfaceContainerLowest, borderRadius: tamagnRadius.xl, padding: tamagnSpacing.md, marginBottom: tamagnSpacing.sm, ...tamagnShadow }}>
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 6 }}>
             <View>

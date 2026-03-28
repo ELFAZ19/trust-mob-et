@@ -1,21 +1,13 @@
 import React, { useState } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { TamagnScreen } from "../../components/TamagnScreen";
-import { Icon } from "../../components/Icon";
-import { EmptyState } from "../../components/EmptyState";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
+import { TamagnScreen } from "../../../components/TamagnScreen";
+import { Icon } from "../../../components/Icon";
+import { EmptyState } from "../../../components/EmptyState";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../../core/theme/tokens";
+import { MOCK_MERCHANT_ORDERS, MERCHANT_ORDER_STATUS_FLOW } from "../../../data/mock";
+import type { MockMerchantOrder } from "../../../data/mock";
 
-interface MerchantOrder {
-  id: string;
-  buyer: string;
-  items: string;
-  total: number;
-  status: "pending" | "preparing" | "shipped" | "delivered";
-  date: string;
-}
-
-const statusFlow: MerchantOrder["status"][] = ["pending", "preparing", "shipped", "delivered"];
 const statusLabels: Record<string, { label: string; color: string; nextAction: string }> = {
   pending: { label: "New Order", color: tamagnColors.tertiary, nextAction: "Accept & Prepare" },
   preparing: { label: "Preparing", color: "#2196F3", nextAction: "Mark as Shipped" },
@@ -23,22 +15,14 @@ const statusLabels: Record<string, { label: string; color: string; nextAction: s
   delivered: { label: "Delivered", color: tamagnColors.primary, nextAction: "" },
 };
 
-const initialOrders: MerchantOrder[] = [
-  { id: "ORD-2001", buyer: "Elias M.", items: "Sidama Coffee × 3", total: 1350, status: "pending", date: "Mar 28, 2026" },
-  { id: "ORD-2002", buyer: "Sara T.", items: "Berbere Spice × 2", total: 500, status: "preparing", date: "Mar 27, 2026" },
-  { id: "ORD-2003", buyer: "Abiy K.", items: "Honey (Wild)", total: 380, status: "shipped", date: "Mar 26, 2026" },
-  { id: "ORD-2004", buyer: "Hana B.", items: "Injera Pack × 4", total: 720, status: "delivered", date: "Mar 25, 2026" },
-  { id: "ORD-2005", buyer: "Dawit G.", items: "Handwoven Shemma", total: 1200, status: "delivered", date: "Mar 24, 2026" },
-];
-
 export function MerchantOrdersScreen(): JSX.Element {
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState<MockMerchantOrder[]>(MOCK_MERCHANT_ORDERS);
 
   function advanceStatus(orderId: string) {
     setOrders((prev) => prev.map((o) => {
       if (o.id !== orderId) return o;
-      const idx = statusFlow.indexOf(o.status);
-      if (idx < statusFlow.length - 1) return { ...o, status: statusFlow[idx + 1] };
+      const idx = MERCHANT_ORDER_STATUS_FLOW.indexOf(o.status);
+      if (idx < MERCHANT_ORDER_STATUS_FLOW.length - 1) return { ...o, status: MERCHANT_ORDER_STATUS_FLOW[idx + 1] };
       return o;
     }));
     Alert.alert("Updated", "Order status advanced.");

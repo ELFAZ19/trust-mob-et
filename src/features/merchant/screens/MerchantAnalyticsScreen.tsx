@@ -1,29 +1,14 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { SectionCard } from "../../components/SectionCard";
-import { StatCard } from "../../components/StatCard";
-import { TamagnScreen } from "../../components/TamagnScreen";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_DARK } from "../../core/theme/tokens";
-
-const monthlyData = [12, 18, 14, 22, 19, 28, 24, 32, 28, 38, 35, 42];
-const topProducts = [
-  { name: "Sidama Specialty Coffee", sales: 128, revenue: 57600 },
-  { name: "Berbere Spice Mix", sales: 94, revenue: 23500 },
-  { name: "Fresh Injera Pack", sales: 87, revenue: 15660 },
-  { name: "Wild Forest Honey", sales: 62, revenue: 23560 },
-];
-
-const feedbackDist = [
-  { stars: 5, pct: 72, count: 245 },
-  { stars: 4, pct: 18, count: 61 },
-  { stars: 3, pct: 6, count: 20 },
-  { stars: 2, pct: 3, count: 10 },
-  { stars: 1, pct: 1, count: 6 },
-];
+import { SectionCard } from "../../../components/SectionCard";
+import { StatCard } from "../../../components/StatCard";
+import { TamagnScreen } from "../../../components/TamagnScreen";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, GRADIENT_DARK } from "../../../core/theme/tokens";
+import { ANALYTICS_MONTHLY_DATA, ANALYTICS_TOP_PRODUCTS, ANALYTICS_FEEDBACK_DIST } from "../../../data/mock";
 
 export function MerchantAnalyticsScreen(): JSX.Element {
-  const maxVal = Math.max(...monthlyData);
+  const maxVal = Math.max(...ANALYTICS_MONTHLY_DATA);
 
   return (
     <TamagnScreen title="Analytics" subtitle="Performance overview">
@@ -42,14 +27,14 @@ export function MerchantAnalyticsScreen(): JSX.Element {
         <LinearGradient colors={[...GRADIENT_DARK]} style={{ padding: tamagnSpacing.lg }}>
           <Text style={{ ...tamagnTypography.cardTitle, color: "#fff", marginBottom: tamagnSpacing.md }}>Monthly Revenue (ETB ×1000)</Text>
           <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 6, height: 100 }}>
-            {monthlyData.map((val, i) => (
+            {ANALYTICS_MONTHLY_DATA.map((val, i) => (
               <View
                 key={i}
                 style={{
                   flex: 1,
                   height: `${(val / maxVal) * 100}%`,
                   borderRadius: 4,
-                  backgroundColor: i === monthlyData.length - 1 ? tamagnColors.primaryContainer : "rgba(255,255,255,0.2)",
+                  backgroundColor: i === ANALYTICS_MONTHLY_DATA.length - 1 ? tamagnColors.primaryContainer : "rgba(255,255,255,0.2)",
                 }}
               />
             ))}
@@ -64,7 +49,7 @@ export function MerchantAnalyticsScreen(): JSX.Element {
 
       {/* Top Products */}
       <SectionCard title="Top Selling Products">
-        {topProducts.map((p, i) => (
+        {ANALYTICS_TOP_PRODUCTS.map((p, i) => (
           <View key={p.name} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10, gap: 12 }}>
             <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: i === 0 ? tamagnColors.primaryFixed : tamagnColors.surfaceContainerHigh, justifyContent: "center", alignItems: "center" }}>
               <Text style={{ ...tamagnTypography.captionBold, color: i === 0 ? tamagnColors.onPrimaryContainer : tamagnColors.secondary }}>#{i + 1}</Text>
@@ -87,7 +72,7 @@ export function MerchantAnalyticsScreen(): JSX.Element {
             <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>342 total reviews</Text>
           </View>
         </View>
-        {feedbackDist.map((row) => (
+        {ANALYTICS_FEEDBACK_DIST.map((row) => (
           <View key={row.stars} style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 6 }}>
             <Text style={{ width: 14, ...tamagnTypography.captionBold, color: tamagnColors.onSurface, textAlign: "right" }}>{row.stars}</Text>
             <Text style={{ fontSize: 10, color: tamagnColors.tertiary }}>★</Text>

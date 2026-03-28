@@ -1,0 +1,1 @@
+export { getTrustTier } from "./trustRanking";

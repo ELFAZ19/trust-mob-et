@@ -2,22 +2,19 @@ import React from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Icon } from "../../components/Icon";
-import { TamagnScreen } from "../../components/TamagnScreen";
-import { EmptyState } from "../../components/EmptyState";
-import { QuantityStepper } from "../../components/QuantityStepper";
-import { useCart } from "../../core/cart/CartContext";
-import { getProductImage } from "../../core/constants/images";
-import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
-
-const DELIVERY_FEE = 75;
-const PLATFORM_FEE_PCT = 0.03;
+import { Icon } from "../../../components/Icon";
+import { TamagnScreen } from "../../../components/TamagnScreen";
+import { EmptyState } from "../../../components/EmptyState";
+import { QuantityStepper } from "../../../components/QuantityStepper";
+import { useCart } from "../../../core/cart/CartContext";
+import { getProductImage } from "../../../core/constants/images";
+import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../../core/theme/tokens";
+import { useCartSummary } from "../hooks/useCartSummary";
 
 export function CartScreen({ navigation }: { navigation: any }): JSX.Element {
   const { items, removeItem, updateQuantity, itemCount, subtotal } = useCart();
   const insets = useSafeAreaInsets();
-  const platformFee = Math.round(subtotal * PLATFORM_FEE_PCT);
-  const total = subtotal + DELIVERY_FEE + platformFee;
+  const { deliveryFee, platformFee, total } = useCartSummary(subtotal);
 
   if (itemCount === 0) {
     return (
@@ -70,7 +67,7 @@ export function CartScreen({ navigation }: { navigation: any }): JSX.Element {
         <View style={{ backgroundColor: tamagnColors.surfaceContainerLowest, borderRadius: tamagnRadius.xl, padding: tamagnSpacing.lg, marginTop: tamagnSpacing.md, ...tamagnShadow }}>
           <Text style={{ ...tamagnTypography.cardTitle, color: tamagnColors.onSurface, marginBottom: tamagnSpacing.md }}>Order Summary</Text>
           <Row label="Subtotal" value={`${subtotal.toLocaleString()} ETB`} />
-          <Row label="Delivery Fee" value={`${DELIVERY_FEE} ETB`} />
+          <Row label="Delivery Fee" value={`${deliveryFee} ETB`} />
           <Row label="Platform Fee (3%)" value={`${platformFee} ETB`} />
           <View style={{ height: 1, backgroundColor: tamagnColors.surfaceContainerHigh, marginVertical: tamagnSpacing.sm }} />
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
