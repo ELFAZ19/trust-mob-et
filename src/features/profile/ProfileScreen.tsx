@@ -1,27 +1,29 @@
 import React from "react";
 import { Alert, Pressable, Text, View } from "react-native";
+import { Icon } from "../../components/Icon";
+import type { IconName } from "../../components/Icon";
 import { TamagnScreen } from "../../components/TamagnScreen";
 import { SectionCard } from "../../components/SectionCard";
 import { TrustBadge } from "../../components/TrustBadge";
 import { useAuth } from "../../core/auth/AuthContext";
 import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow } from "../../core/theme/tokens";
 
-const buyerSettings = [
-  { icon: "📍", label: "Delivery Addresses", subtitle: "Manage your saved addresses" },
-  { icon: "💳", label: "Payment Methods", subtitle: "M-Pesa and other options" },
-  { icon: "🔔", label: "Notifications", subtitle: "Order updates, deals & more" },
-  { icon: "🌙", label: "Appearance", subtitle: "Theme and display" },
-  { icon: "🔒", label: "Privacy & Security", subtitle: "Password, 2FA settings" },
-  { icon: "❓", label: "Help & Support", subtitle: "FAQs and contact" },
+const buyerSettings: { icon: IconName; label: string; subtitle: string }[] = [
+  { icon: "location", label: "Delivery Addresses", subtitle: "Manage your saved addresses" },
+  { icon: "credit-card", label: "Payment Methods", subtitle: "M-Pesa and other options" },
+  { icon: "bell", label: "Notifications", subtitle: "Order updates, deals & more" },
+  { icon: "moon", label: "Appearance", subtitle: "Theme and display" },
+  { icon: "lock", label: "Privacy & Security", subtitle: "Password, 2FA settings" },
+  { icon: "help", label: "Help & Support", subtitle: "FAQs and contact" },
 ];
 
-const merchantSettings = [
-  { icon: "🏪", label: "Store Details", subtitle: "Name, description, hours" },
-  { icon: "💳", label: "Payout Settings", subtitle: "M-Pesa payout configuration" },
-  { icon: "🔔", label: "Notifications", subtitle: "Order alerts, reviews" },
-  { icon: "🛡️", label: "Verification", subtitle: "Documents and trust level" },
-  { icon: "🔒", label: "Privacy & Security", subtitle: "Password, 2FA settings" },
-  { icon: "❓", label: "Help & Support", subtitle: "Merchant resources" },
+const merchantSettings: { icon: IconName; label: string; subtitle: string }[] = [
+  { icon: "store", label: "Store Details", subtitle: "Name, description, hours" },
+  { icon: "credit-card", label: "Payout Settings", subtitle: "M-Pesa payout configuration" },
+  { icon: "bell", label: "Notifications", subtitle: "Order alerts, reviews" },
+  { icon: "verified", label: "Verification", subtitle: "Documents and trust level" },
+  { icon: "lock", label: "Privacy & Security", subtitle: "Password, 2FA settings" },
+  { icon: "help", label: "Help & Support", subtitle: "Merchant resources" },
 ];
 
 export function ProfileScreen(): JSX.Element {
@@ -42,7 +44,7 @@ export function ProfileScreen(): JSX.Element {
           alignItems: "center",
           marginBottom: tamagnSpacing.md,
         }}>
-          <Text style={{ fontSize: 36 }}>{isMerchant ? "🏪" : "👤"}</Text>
+          <Icon name={isMerchant ? "store" : "user"} size={40} color={tamagnColors.onSurface} />
         </View>
         <Text style={{ ...tamagnTypography.screenTitle, color: tamagnColors.onSurface }}>{profile?.fullName ?? "User"}</Text>
         <Text style={{ ...tamagnTypography.body, color: tamagnColors.secondary, marginTop: 2 }}>{isMerchant ? "Merchant Account" : "Buyer Account"}</Text>
@@ -84,13 +86,13 @@ export function ProfileScreen(): JSX.Element {
           }}
         >
           <View style={{ width: 40, height: 40, borderRadius: tamagnRadius.sm, backgroundColor: tamagnColors.surfaceContainerHigh, justifyContent: "center", alignItems: "center" }}>
-            <Text style={{ fontSize: 18 }}>{item.icon}</Text>
+            <Icon name={item.icon} size={20} color={tamagnColors.onSurface} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.onSurface }}>{item.label}</Text>
             <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>{item.subtitle}</Text>
           </View>
-          <Text style={{ fontSize: 14, color: tamagnColors.outlineVariant }}>›</Text>
+          <Icon name="chevron-right" size={16} color={tamagnColors.outlineVariant} />
         </Pressable>
       ))}
 
@@ -103,8 +105,12 @@ export function ProfileScreen(): JSX.Element {
           borderRadius: tamagnRadius.lg,
           backgroundColor: tamagnColors.errorContainer,
           alignItems: "center",
+          flexDirection: "row",
+          justifyContent: "center",
+          gap: 8,
         }}
       >
+        <Icon name="logout" size={20} color={tamagnColors.error} />
         <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.error }}>Sign Out</Text>
       </Pressable>
 

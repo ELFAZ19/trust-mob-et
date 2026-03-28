@@ -2,6 +2,7 @@ import React from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Icon } from "../../components/Icon";
 import { SectionCard } from "../../components/SectionCard";
 import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
 
@@ -27,7 +28,7 @@ export function OrderDetailScreen({ navigation }: { navigation: any }): JSX.Elem
         {/* Header */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: tamagnSpacing.lg }}>
           <Pressable onPress={() => navigation.goBack()} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: tamagnColors.surfaceContainerLow, justifyContent: "center", alignItems: "center" }}>
-            <Text style={{ fontSize: 18 }}>←</Text>
+            <Icon name="back" size={20} color={tamagnColors.onSurface} />
           </Pressable>
           <View>
             <Text style={{ ...tamagnTypography.screenTitle, color: tamagnColors.onSurface }}>Order Details</Text>
@@ -51,7 +52,7 @@ export function OrderDetailScreen({ navigation }: { navigation: any }): JSX.Elem
                   borderWidth: step.done ? 0 : 2,
                   borderColor: tamagnColors.outlineVariant,
                 }}>
-                  {step.done ? <Text style={{ color: "#fff", fontSize: 11, fontWeight: "700" }}>✓</Text> : null}
+                  {step.done ? <Icon name="check" size={16} color="#fff" /> : null}
                 </View>
                 {i < steps.length - 1 ? (
                   <View style={{ width: 2, flex: 1, minHeight: 28, backgroundColor: step.done ? tamagnColors.primary : tamagnColors.surfaceContainerHigh }} />
@@ -85,7 +86,7 @@ export function OrderDetailScreen({ navigation }: { navigation: any }): JSX.Elem
         <SectionCard accent={tamagnColors.primary}>
           <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
             <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(1,110,0,0.1)", justifyContent: "center", alignItems: "center" }}>
-              <Text style={{ fontSize: 22 }}>🛡️</Text>
+              <Icon name="verified" size={22} color={tamagnColors.primary} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.primary }}>Payment Held in Escrow</Text>
@@ -143,7 +144,7 @@ export function OrderDetailScreen({ navigation }: { navigation: any }): JSX.Elem
             end={{ x: 1, y: 1 }}
             style={{ borderRadius: tamagnRadius.lg, paddingVertical: 16, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 6 }}
           >
-            <Text style={{ color: "#fff", fontSize: 16 }}>✓</Text>
+            <Icon name="check" size={16} color="#fff" />
             <Text style={{ color: "#fff", fontWeight: "900", fontSize: 15 }}>Confirm Delivery</Text>
           </LinearGradient>
         </Pressable>

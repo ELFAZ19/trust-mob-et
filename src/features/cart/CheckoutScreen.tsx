@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Icon } from "../../components/Icon";
 import { SectionCard } from "../../components/SectionCard";
 import { useCart } from "../../core/cart/CartContext";
 import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
@@ -36,7 +37,7 @@ export function CheckoutScreen({ navigation }: { navigation: any }): JSX.Element
         {/* Back + Title */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: tamagnSpacing.lg }}>
           <Pressable onPress={() => navigation.goBack()} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: tamagnColors.surfaceContainerLow, justifyContent: "center", alignItems: "center" }}>
-            <Text style={{ fontSize: 18 }}>←</Text>
+            <Icon name="back" size={20} color={tamagnColors.onSurface} />
           </Pressable>
           <Text style={{ ...tamagnTypography.screenTitle, color: tamagnColors.onSurface }}>Checkout</Text>
         </View>
@@ -105,7 +106,7 @@ export function CheckoutScreen({ navigation }: { navigation: any }): JSX.Element
         {/* Escrow Explanation */}
         <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 12, backgroundColor: "rgba(1,110,0,0.04)", borderRadius: tamagnRadius.xl, padding: tamagnSpacing.lg, marginBottom: tamagnSpacing.md }}>
           <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(1,110,0,0.1)", justifyContent: "center", alignItems: "center" }}>
-            <Text style={{ fontSize: 22 }}>🛡️</Text>
+            <Icon name="verified" size={22} color={tamagnColors.primary} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ ...tamagnTypography.cardTitle, color: tamagnColors.primary, marginBottom: 4 }}>How Escrow Works</Text>
@@ -121,13 +122,13 @@ export function CheckoutScreen({ navigation }: { navigation: any }): JSX.Element
         {/* M-Pesa */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: tamagnColors.surfaceContainerLowest, borderRadius: tamagnRadius.xl, padding: tamagnSpacing.lg, ...tamagnShadow }}>
           <View style={{ width: 48, height: 48, borderRadius: tamagnRadius.md, backgroundColor: tamagnColors.primary, justifyContent: "center", alignItems: "center" }}>
-            <Text style={{ color: "#fff", fontWeight: "900", fontSize: 18, fontStyle: "italic" }}>M</Text>
+            <Icon name="mpesa" size={26} color="#fff" />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.onSurface }}>Pay with M-Pesa</Text>
             <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>A payment prompt will be sent to your phone</Text>
           </View>
-          <Text style={{ fontSize: 18, color: tamagnColors.primary }}>✓</Text>
+          <Icon name="check" size={18} color={tamagnColors.primary} />
         </View>
       </ScrollView>
 
@@ -151,7 +152,7 @@ export function CheckoutScreen({ navigation }: { navigation: any }): JSX.Element
             end={{ x: 1, y: 1 }}
             style={{ borderRadius: tamagnRadius.lg, paddingVertical: 18, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 8, opacity: loading ? 0.7 : 1 }}
           >
-            <Text style={{ color: "#fff", fontWeight: "900", fontSize: 18, fontStyle: "italic" }}>M</Text>
+            <Icon name="mpesa" size={22} color="#fff" />
             <Text style={{ color: "#fff", fontWeight: "900", fontSize: 16 }}>
               {loading ? "Processing..." : `Pay ${total.toLocaleString()} ETB`}
             </Text>

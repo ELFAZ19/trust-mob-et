@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
+import { Icon } from "../../components/Icon";
 import { ProductCard } from "../../components/ProductCard";
 import { TamagnScreen } from "../../components/TamagnScreen";
 import { EmptyState } from "../../components/EmptyState";
@@ -53,23 +54,31 @@ export function DiscoveryScreen({ navigation }: { navigation: any }): JSX.Elemen
           paddingHorizontal: 14,
           ...tamagnShadow,
         }}>
-          <Text style={{ fontSize: 18, marginRight: 10, color: tamagnColors.outline }}>🔍</Text>
+          <Icon name="search" size={20} color={tamagnColors.outline} />
           <TextInput
             value={search}
             onChangeText={setSearch}
             placeholder="Search products, verified sellers..."
             placeholderTextColor={tamagnColors.outlineVariant}
-            style={{ flex: 1, paddingVertical: 14, fontSize: 15, color: tamagnColors.onSurface }}
+            style={{ flex: 1, paddingVertical: 14, paddingHorizontal: 10, fontSize: 15, color: tamagnColors.onSurface }}
           />
-          {search ? (
-            <Pressable onPress={() => setSearch("")}>
-              <Text style={{ fontSize: 16, color: tamagnColors.secondary }}>✕</Text>
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            {search ? (
+              <Pressable onPress={() => setSearch("")} style={{ padding: 4 }}>
+                <Icon name="close" size={16} color={tamagnColors.secondary} />
+              </Pressable>
+            ) : null}
+            <Pressable style={{ padding: 4 }}>
+              <Icon name="filter" size={18} color={tamagnColors.outline} />
             </Pressable>
-          ) : null}
+            <Pressable style={{ padding: 4 }}>
+              <Icon name="sort" size={18} color={tamagnColors.outline} />
+            </Pressable>
+          </View>
         </View>
       </View>
 
-      {/* Category Chips - horizontal scroll */}
+      {/* Category Chips */}
       <View style={{ marginBottom: tamagnSpacing.md }}>
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, paddingHorizontal: tamagnSpacing.md }}>
           {categories.map((cat) => {
@@ -97,11 +106,14 @@ export function DiscoveryScreen({ navigation }: { navigation: any }): JSX.Elemen
 
       {/* Results */}
       <View style={{ paddingHorizontal: tamagnSpacing.md }}>
-        <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary, marginBottom: tamagnSpacing.sm }}>
-          {filtered.length} results
-        </Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: tamagnSpacing.sm }}>
+          <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>
+            {filtered.length} results
+          </Text>
+          <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>Sort: Popularity</Text>
+        </View>
         {filtered.length === 0 ? (
-          <EmptyState icon="🔍" title="No results found" subtitle="Try a different search or category" />
+          <EmptyState icon="search" title="No results found" subtitle="Try a different search or category" />
         ) : (
           filtered.map((item) => (
             <ProductCard

@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SectionCard } from "../../components/SectionCard";
 import { StatCard } from "../../components/StatCard";
 import { TamagnScreen } from "../../components/TamagnScreen";
+import { Icon } from "../../components/Icon";
 import { TrustBadge } from "../../components/TrustBadge";
 import { useAuth } from "../../core/auth/AuthContext";
 import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY, GRADIENT_DARK } from "../../core/theme/tokens";
@@ -33,7 +34,7 @@ export function MerchantDashboardScreen({ navigation }: { navigation: any }): JS
           <TrustBadge tier="Gold" label="Verified" size="sm" />
         </View>
         <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: tamagnColors.secondaryContainer, justifyContent: "center", alignItems: "center" }}>
-          <Text style={{ fontSize: 16 }}>🔔</Text>
+          <Icon name="bell" size={20} color={tamagnColors.onSurface} />
         </View>
       </View>
 

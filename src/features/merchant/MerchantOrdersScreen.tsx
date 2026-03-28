@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { TamagnScreen } from "../../components/TamagnScreen";
+import { Icon } from "../../components/Icon";
 import { EmptyState } from "../../components/EmptyState";
 import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
 
@@ -49,7 +50,7 @@ export function MerchantOrdersScreen(): JSX.Element {
   return (
     <TamagnScreen title="Manage Orders" subtitle={`${active.length} active`}>
       {orders.length === 0 ? (
-        <EmptyState icon="📦" title="No orders yet" subtitle="When buyers place orders, they'll appear here" />
+        <EmptyState icon="package" title="No orders yet" subtitle="When buyers place orders, they'll appear here" />
       ) : (
         <>
           {active.length > 0 ? (
@@ -98,7 +99,10 @@ export function MerchantOrdersScreen(): JSX.Element {
                 <View key={order.id} style={{ backgroundColor: tamagnColors.surfaceContainerLowest, borderRadius: tamagnRadius.xl, padding: tamagnSpacing.md, marginBottom: tamagnSpacing.sm, opacity: 0.7 }}>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 6 }}>
                     <Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.secondary }}>{order.id}</Text>
-                    <Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.primary }}>✓ Delivered</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                      <Icon name="check" size={14} color={tamagnColors.primary} />
+                      <Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.primary }}>Delivered</Text>
+                    </View>
                   </View>
                   <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.onSurface }}>{order.items}</Text>
                   <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary, marginTop: 2 }}>{order.buyer} · {order.total.toLocaleString()} ETB</Text>

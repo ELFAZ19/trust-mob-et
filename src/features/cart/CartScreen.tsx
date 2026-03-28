@@ -1,11 +1,13 @@
 import React from "react";
-import { Alert, Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Icon } from "../../components/Icon";
 import { TamagnScreen } from "../../components/TamagnScreen";
 import { EmptyState } from "../../components/EmptyState";
 import { QuantityStepper } from "../../components/QuantityStepper";
 import { useCart } from "../../core/cart/CartContext";
+import { getProductImage } from "../../core/constants/images";
 import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
 
 const DELIVERY_FEE = 75;
@@ -20,7 +22,7 @@ export function CartScreen({ navigation }: { navigation: any }): JSX.Element {
   if (itemCount === 0) {
     return (
       <TamagnScreen title="Cart">
-        <EmptyState icon="🛒" title="Your cart is empty" subtitle="Discover trusted products and add them here" />
+        <EmptyState icon="cart" title="Your cart is empty" subtitle="Discover trusted products and add them here" />
       </TamagnScreen>
     );
   }
@@ -28,7 +30,6 @@ export function CartScreen({ navigation }: { navigation: any }): JSX.Element {
   return (
     <View style={{ flex: 1, backgroundColor: tamagnColors.surface }}>
       <TamagnScreen title="Cart" subtitle={`${itemCount} items`}>
-        {/* Cart Items */}
         {items.map((item) => (
           <View
             key={item.listingId}
@@ -43,8 +44,8 @@ export function CartScreen({ navigation }: { navigation: any }): JSX.Element {
               ...tamagnShadow,
             }}
           >
-            <View style={{ width: 56, height: 56, borderRadius: tamagnRadius.md, backgroundColor: tamagnColors.surfaceContainerHigh, justifyContent: "center", alignItems: "center" }}>
-              <Text style={{ fontSize: 26 }}>📦</Text>
+            <View style={{ width: 64, height: 64, borderRadius: tamagnRadius.md, overflow: "hidden" }}>
+              <Image source={{ uri: getProductImage("food") }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ ...tamagnTypography.cardTitle, color: tamagnColors.onSurface }} numberOfLines={1}>{item.title}</Text>
@@ -57,7 +58,8 @@ export function CartScreen({ navigation }: { navigation: any }): JSX.Element {
                 onIncrease={() => updateQuantity(item.listingId, item.quantity + 1)}
                 onDecrease={() => item.quantity === 1 ? removeItem(item.listingId) : updateQuantity(item.listingId, item.quantity - 1)}
               />
-              <Pressable onPress={() => removeItem(item.listingId)}>
+              <Pressable onPress={() => removeItem(item.listingId)} style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                <Icon name="trash" size={12} color={tamagnColors.error} />
                 <Text style={{ ...tamagnTypography.caption, color: tamagnColors.error }}>Remove</Text>
               </Pressable>
             </View>
@@ -78,8 +80,8 @@ export function CartScreen({ navigation }: { navigation: any }): JSX.Element {
         </View>
 
         {/* Escrow Badge */}
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: "rgba(1,110,0,0.05)", borderRadius: tamagnRadius.lg, padding: tamagnSpacing.md, marginTop: tamagnSpacing.md }}>
-          <Text style={{ fontSize: 20 }}>🛡️</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: "rgba(1,110,0,0.04)", borderRadius: tamagnRadius.lg, padding: tamagnSpacing.md, marginTop: tamagnSpacing.md }}>
+          <Icon name="verified" size={22} color={tamagnColors.primary} />
           <View style={{ flex: 1 }}>
             <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.primary }}>Escrow Protected</Text>
             <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>Funds held safely until you confirm delivery</Text>
@@ -109,6 +111,7 @@ export function CartScreen({ navigation }: { navigation: any }): JSX.Element {
             end={{ x: 1, y: 1 }}
             style={{ borderRadius: tamagnRadius.lg, paddingVertical: 18, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 8 }}
           >
+            <Icon name="shield" size={18} color="#fff" />
             <Text style={{ color: "#fff", fontWeight: "900", fontSize: 16 }}>Proceed to Checkout</Text>
             <Text style={{ color: "#fff", fontWeight: "700", fontSize: 14 }}>· {total.toLocaleString()} ETB</Text>
           </LinearGradient>

@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Icon } from "../../components/Icon";
 import { SectionCard } from "../../components/SectionCard";
 import { TrustBadge } from "../../components/TrustBadge";
 import { QuantityStepper } from "../../components/QuantityStepper";
 import { useCart } from "../../core/cart/CartContext";
+import { getProductImage, getMerchantImage } from "../../core/constants/images";
 import { tamagnColors, tamagnRadius, tamagnSpacing, tamagnTypography, tamagnShadow, GRADIENT_PRIMARY } from "../../core/theme/tokens";
 import { getTrustTier } from "../trust/trustRanking";
 import type { MarketplaceCard } from "../../core/types/domain";
-
-const categoryEmoji: Record<string, string> = { Food: "🍲", Coffee: "☕", Spices: "🌶️", Clothing: "👕", Electronics: "📱", Home: "🏠", Fashion: "👟", Handicrafts: "📚" };
 
 export function ProductDetailScreen({ route, navigation }: { route: any; navigation: any }): JSX.Element {
   const product: MarketplaceCard = route.params.product;
@@ -30,18 +30,25 @@ export function ProductDetailScreen({ route, navigation }: { route: any; navigat
     <View style={{ flex: 1, backgroundColor: tamagnColors.surface }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Hero Image */}
-        <View style={{ height: 280, backgroundColor: tamagnColors.surfaceContainerHigh, justifyContent: "center", alignItems: "center" }}>
-          <Text style={{ fontSize: 80 }}>{categoryEmoji[product.category] ?? "📦"}</Text>
+        <View style={{ height: 300, overflow: "hidden" }}>
+          <Image source={{ uri: getProductImage(product.category) }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
+          {/* Gradient overlay at bottom */}
+          <LinearGradient colors={["transparent", "rgba(0,0,0,0.3)"]} style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 80 }} />
           {/* Back button */}
           <Pressable
             onPress={() => navigation.goBack()}
             style={{ position: "absolute", top: insets.top + 8, left: 16, width: 42, height: 42, borderRadius: 21, backgroundColor: "rgba(255,255,255,0.9)", justifyContent: "center", alignItems: "center", ...tamagnShadow }}
           >
-            <Text style={{ fontSize: 20, color: tamagnColors.onSurface }}>←</Text>
+            <Icon name="back" size={20} color={tamagnColors.onSurface} />
           </Pressable>
-          {/* Category chip */}
-          <View style={{ position: "absolute", top: insets.top + 8, right: 16, backgroundColor: tamagnColors.surfaceContainerLowest, borderRadius: tamagnRadius.pill, paddingHorizontal: 12, paddingVertical: 4, ...tamagnShadow }}>
-            <Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.secondary }}>{product.category}</Text>
+          {/* Share + Favorite */}
+          <View style={{ position: "absolute", top: insets.top + 8, right: 16, flexDirection: "row", gap: 8 }}>
+            <Pressable style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: "rgba(255,255,255,0.9)", justifyContent: "center", alignItems: "center" }}>
+              <Icon name="share" size={18} color={tamagnColors.onSurface} />
+            </Pressable>
+            <Pressable style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: "rgba(255,255,255,0.9)", justifyContent: "center", alignItems: "center" }}>
+              <Icon name="heart-outline" size={18} color={tamagnColors.error} />
+            </Pressable>
           </View>
           {/* Verified badge */}
           <View style={{ position: "absolute", bottom: 16, left: 16 }}>
@@ -63,15 +70,21 @@ export function ProductDetailScreen({ route, navigation }: { route: any; navigat
             </View>
           </View>
 
-          {/* Rating + Distance */}
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 16, marginBottom: tamagnSpacing.lg }}>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(255,220,195,0.5)", paddingHorizontal: 10, paddingVertical: 4, borderRadius: tamagnRadius.sm }}>
-              <Text style={{ fontSize: 14, color: tamagnColors.tertiary }}>★</Text>
+          {/* Rating + Distance + ETA */}
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 14, marginBottom: tamagnSpacing.lg }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(255,220,195,0.5)", paddingHorizontal: 10, paddingVertical: 5, borderRadius: tamagnRadius.sm }}>
+              <Icon name="star" size={14} color={tamagnColors.tertiary} />
               <Text style={{ ...tamagnTypography.captionBold, color: tamagnColors.tertiary }}>{product.rating.toFixed(1)}</Text>
               <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>({product.reviewCount})</Text>
             </View>
-            <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>📍 {product.distanceKm.toFixed(1)} km</Text>
-            <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>⏱️ ~{product.etaMinutes} min</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+              <Icon name="location" size={14} color={tamagnColors.secondary} />
+              <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>{product.distanceKm.toFixed(1)} km</Text>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+              <Icon name="clock" size={14} color={tamagnColors.secondary} />
+              <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>~{product.etaMinutes} min</Text>
+            </View>
           </View>
 
           {/* Description */}
@@ -81,17 +94,26 @@ export function ProductDetailScreen({ route, navigation }: { route: any; navigat
 
           {/* Merchant Trust */}
           <SectionCard title="Merchant Trust Profile">
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 14, marginBottom: tamagnSpacing.md }}>
+              <View style={{ width: 52, height: 52, borderRadius: tamagnRadius.md, overflow: "hidden" }}>
+                <Image source={{ uri: getMerchantImage(0) }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.onSurface }}>{product.merchantName}</Text>
+                <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>Gold Verified · Since 2024</Text>
+              </View>
+            </View>
             <View style={{ flexDirection: "row", gap: 20 }}>
               <View style={{ alignItems: "center" }}>
-                <Text style={{ ...tamagnTypography.statLg, color: tamagnColors.primary }}>{product.trustScore}</Text>
+                <Text style={{ ...tamagnTypography.stat, color: tamagnColors.primary }}>{product.trustScore}</Text>
                 <Text style={{ ...tamagnTypography.label, color: tamagnColors.secondary }}>TRUST</Text>
               </View>
               <View style={{ alignItems: "center" }}>
-                <Text style={{ ...tamagnTypography.statLg, color: tamagnColors.onSurface }}>{product.rating.toFixed(1)}</Text>
+                <Text style={{ ...tamagnTypography.stat, color: tamagnColors.onSurface }}>{product.rating.toFixed(1)}</Text>
                 <Text style={{ ...tamagnTypography.label, color: tamagnColors.secondary }}>RATING</Text>
               </View>
               <View style={{ alignItems: "center" }}>
-                <Text style={{ ...tamagnTypography.statLg, color: tamagnColors.onSurface }}>{product.reviewCount}</Text>
+                <Text style={{ ...tamagnTypography.stat, color: tamagnColors.onSurface }}>{product.reviewCount}</Text>
                 <Text style={{ ...tamagnTypography.label, color: tamagnColors.secondary }}>REVIEWS</Text>
               </View>
             </View>
@@ -100,11 +122,11 @@ export function ProductDetailScreen({ route, navigation }: { route: any; navigat
           {/* Escrow Info */}
           <SectionCard accent={tamagnColors.primary}>
             <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
-              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(1,110,0,0.08)", justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ fontSize: 18 }}>🛡️</Text>
+              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(1,110,0,0.08)", justifyContent: "center", alignItems: "center" }}>
+                <Icon name="verified" size={22} color={tamagnColors.primary} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.onSurface }}>Escrow Protected</Text>
+                <Text style={{ ...tamagnTypography.bodyBold, color: tamagnColors.primary }}>Escrow Protected</Text>
                 <Text style={{ ...tamagnTypography.caption, color: tamagnColors.secondary }}>Payment held safely until delivery confirmed</Text>
               </View>
             </View>
@@ -135,7 +157,7 @@ export function ProductDetailScreen({ route, navigation }: { route: any; navigat
               end={{ x: 1, y: 1 }}
               style={{ borderRadius: tamagnRadius.lg, paddingVertical: 16, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8 }}
             >
-              <Text style={{ fontSize: 18 }}>🛒</Text>
+              <Icon name="add-cart" size={18} color="#fff" />
               <Text style={{ color: "#fff", fontWeight: "900", fontSize: 15 }}>Add · {(product.price * qty).toLocaleString()} ETB</Text>
             </LinearGradient>
           </Pressable>

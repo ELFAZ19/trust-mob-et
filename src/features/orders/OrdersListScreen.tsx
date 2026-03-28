@@ -35,7 +35,7 @@ export function OrdersListScreen({ navigation }: { navigation: any }): JSX.Eleme
   return (
     <TamagnScreen title="Orders">
       {mockOrders.length === 0 ? (
-        <EmptyState icon="📦" title="No orders yet" subtitle="Your order history will appear here" />
+        <EmptyState icon="package" title="No orders yet" subtitle="Your order history will appear here" />
       ) : (
         <>
           {active.length > 0 ? (
